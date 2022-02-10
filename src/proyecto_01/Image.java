@@ -8,10 +8,12 @@ public class Image {
 
     private int idClient;
     private String type;
+    private int step;
 
-    public Image(int idClient, String type) {
+    public Image(int idClient, String type, int step) {
         this.idClient = idClient;
         this.type = type;
+        this.step = step;
     }
 
     public int getIdClient() {
@@ -28,5 +30,13 @@ public class Image {
 
     public void setType(String type) {
         this.type = type;
+    }
+    
+    public int getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 }

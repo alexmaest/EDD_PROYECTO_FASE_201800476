@@ -54,6 +54,37 @@ public class DoubleList {
         NodeDoubleC Back = new NodeDoubleC();
         Current = first;
         Back = null;
+        if (first != null) {
+            while (Current != null) {
+                if (Current.value.getId() == valueToRemove) {
+                    if (Current == first) {
+                        first = first.next;
+                        try {
+                            first.previous = null;
+                        }catch(Exception e){
+                        }
+                    } else if (Current == last) {
+                        Back.next = null;
+                        last = Back;
+                    } else {
+                        Back.next = Current.next;
+                        Current.next.previous = Back;
+                    }
+                }
+                Back = Current;
+                Current = Current.next;
+            }
+            this.size -= 1;
+        }
+    }
+
+    /*
+    public void remove(int valueToRemove) {
+        NodeDoubleC Current = new NodeDoubleC();
+        NodeDoubleC Back = new NodeDoubleC();
+        Current = first;
+        Back = null;
+        System.out.println("SIZE: " + this.size);
         while (Current != null) {
             if (Current.value.getId() == valueToRemove) {
                 if (Current == first) {
@@ -71,5 +102,6 @@ public class DoubleList {
             Back = Current;
             Current = Current.next;
         }
-    }
+        this.size -= 1;
+    }*/
 }

@@ -10,15 +10,16 @@ import proyecto_01.Structures.Nodes.NodeImage;
  * @author Alexis
  */
 public class Cola {
+
     //Clientes
-    private NodeC first;
-    private NodeC last;
-    private int size = 0;
+    public NodeC first;
+    public NodeC last;
+    public int size = 0;
     //Imagenes
-    private NodeImage first2;
-    private NodeImage last2;
-    private int size2 = 0;
-    
+    public NodeImage first2;
+    public NodeImage last2;
+    public int size2 = 0;
+
     public Cola() {
         this.first = null;
         this.last = null;
@@ -30,36 +31,53 @@ public class Cola {
 
     public void addC(Cliente valueToAdd) {
         NodeC myNode = new NodeC(valueToAdd);
-        myNode.next = null;
-        if (this.first == null & this.last == null) {
+        if (this.first == null) {
             this.first = myNode;
-            this.last = myNode;
+        } else {
+            this.last.next = myNode;
         }
-        this.last.next = myNode;
-        this.last = this.last.next;
+        this.last = myNode;
         this.size += 1;
     }
-    
+
     public void addImg(Image valueToAdd) {
         NodeImage myNode = new NodeImage(valueToAdd);
-        myNode.next = null;
-        if (this.first2 == null & this.last2 == null) {
+        if (this.first2 == null) {
             this.first2 = myNode;
-            this.last2 = myNode;
+        } else {
+            this.last2.next = myNode;
         }
-        this.last2.next = myNode;
-        this.last2 = this.last2.next;
+        this.last2 = myNode;
         this.size2 += 1;
     }
 
     public boolean removeC() {
-        this.first = this.first.next;
-        NodeC Current = this.first;
-        this.size -= 1;
+        if (this.first != null) {
+            NodeC removedNode = this.first;
+            this.first = this.first.next;
+            removedNode.next = null;
+            if (this.first == null) {
+                this.last = null;
+            }
+            this.size -= 1;
+        }
         return true;
     }
-    
-    public void printContentC(){
+
+    public boolean removeImage() {
+        if (this.first2 != null) {
+            NodeImage removedNode = this.first2;
+            this.first2 = this.first2.next;
+            removedNode.next = null;
+            if (this.first2 == null) {
+                this.last2 = null;
+            }
+            this.size2 -= 1;
+        }
+        return true;
+    }
+
+    public void printContentC() {
         NodeC Current = this.first;
         if (this.size != 0) {
             //System.out.println("----------- Contenido de la cola -----------");
@@ -68,46 +86,46 @@ public class Cola {
                 Current = Current.next;
             }
             System.out.println(Current.value.getName());
-        }else{
+        } else {
             System.out.println("La cola esta vacía");
         }
     }
-    
-    public void printContentImg(){
+
+    public void printContentImg() {
         NodeImage Current = this.first2;
         if (this.size2 != 0) {
             //System.out.println("----------- Contenido de la cola -----------");
             while (Current.next != null) {
-                System.out.print(Current.value.getType()+ ", ");
+                System.out.print(Current.value.getType() + Current.value.getIdClient() + "  ");
                 Current = Current.next;
             }
-            System.out.println(Current.value.getType());
-        }else{
+            System.out.println(Current.value.getType() + Current.value.getIdClient());
+        } else {
             System.out.println("La cola esta vacía");
         }
     }
-    
-    public NodeC getAndRemoveC(){
+
+    public NodeC getAndRemoveC() {
         NodeC cliente = this.first;
         this.first = this.first.next;
         NodeC Current = this.first;
         this.size -= 1;
         return cliente;
     }
-    
-    public NodeImage getAndRemoveImg(){
+
+    public NodeImage getAndRemoveImg() {
         NodeImage imagen = this.first2;
         this.first2 = this.first2.next;
         NodeImage Current = this.first2;
         this.size2 -= 1;
         return imagen;
     }
-    
-    public int getSizeC(){
+
+    public int getSizeC() {
         return this.size;
     }
-    
-    public int getSizeImg(){
+
+    public int getSizeImg() {
         return this.size2;
     }
 }

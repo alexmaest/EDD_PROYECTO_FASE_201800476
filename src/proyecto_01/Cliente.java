@@ -16,8 +16,11 @@ public class Cliente {
     private List imgBW;
     private boolean giveImg = false;
     private boolean wait = false;
+    private boolean exit = false;
+    private int stepCont = 0;
+    private String vAttended = "";
 
-    public Cliente(int id, String name, int numImgC, int numImgBW, List imgC, List imgBW, boolean giveImg, boolean wait) {
+    public Cliente(int id, String name, int numImgC, int numImgBW, List imgC, List imgBW, boolean giveImg, boolean wait, boolean exit, int stepCont, String vAttended) {
         this.id = id;
         this.name = name;
         this.numImgC = numImgC;
@@ -26,6 +29,9 @@ public class Cliente {
         this.imgBW = imgBW;
         this.giveImg = giveImg;
         this.wait = wait;
+        this.exit = exit;
+        this.stepCont = stepCont;
+        this.vAttended = vAttended;
     }
 
     public int getId() {
@@ -43,7 +49,7 @@ public class Cliente {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public int getnumImgC() {
         return numImgC;
     }
@@ -51,7 +57,7 @@ public class Cliente {
     public void setNumImgC(int numImgC) {
         this.numImgC = numImgC;
     }
-    
+
     public int getnumImgBW() {
         return numImgBW;
     }
@@ -83,12 +89,36 @@ public class Cliente {
     public void setgiveImg(boolean giveImg) {
         this.giveImg = giveImg;
     }
-    
+
     public boolean getWait() {
         return wait;
     }
 
     public void setWait(boolean wait) {
         this.wait = wait;
+    }
+
+    public boolean getExit() {
+        return exit;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public int getStepCont() {
+        return stepCont;
+    }
+
+    public void setStepCont(int stepCont) {
+        this.stepCont = stepCont;
+    }
+
+    public String getvAttended() {
+        return vAttended;
+    }
+
+    public void setvAttended(String vAttended) {
+        this.vAttended = vAttended;
     }
 }

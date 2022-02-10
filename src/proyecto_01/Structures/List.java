@@ -95,8 +95,8 @@ public class List {
                 Previous.next = Current.next;
                 Current.next = null;
             }
+            this.size -= 1;
         }
-        this.size -= 1;
         return true;
     }
 
@@ -121,8 +121,8 @@ public class List {
                 Previous.next = Current.next;
                 Current.next = null;
             }
+            this.size2 -= 1;
         }
-        this.size2 -= 1;
         return true;
     }
 
@@ -141,8 +141,8 @@ public class List {
                 Previous.next = Current.next;
                 Current.next = null;
             }
+            this.size3 -= 1;
         }
-        this.size3 -= 1;
         return true;
     }
 
@@ -179,12 +179,34 @@ public class List {
         }
     }
 
+    public void printContentVClients() {
+        NodeV Current = this.first;
+        boolean Found = false;
+        if (this.size != 0) {
+            //System.out.println("----------- Contenido de la cola -----------");
+            while (Current != null) {
+                if (Current.value.getClient() != null) {
+                    System.out.print(Current.value.getClient().value.getName() + "  ");
+                    Found = true;
+                }
+                Current = Current.next;
+            }
+            if (Found != true) {
+                System.out.println("Las ventanillas estan vacías");
+            } else {
+                System.out.print("\n");
+            }
+        } else {
+            System.out.println("Las ventanillas estan vacías");
+        }
+    }
+
     public void printContentC() {
         NodeC Current = this.first2;
         if (this.size2 != 0) {
             //System.out.println("----------- Contenido de la cola -----------");
             while (Current.next != null) {
-                System.out.print(Current.value.getName() + ", ");
+                System.out.print(Current.value.getName() + "    ");
                 Current = Current.next;
             }
             System.out.println(Current.value.getName());
