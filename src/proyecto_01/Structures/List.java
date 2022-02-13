@@ -146,29 +146,9 @@ public class List {
         return true;
     }
 
-    /*public int getImageById(int idImage) {
-        boolean Found = false;
-        if (this.size3 == 0) {
-        } else {
-            NodeImage Current = this.first3;
-            while (Current.next != null) {
-                if (Current.value.getIdImage() == idImage){
-                    Found = true;
-                    return Current.value.getIdImage();
-                }
-                Current = Current.next;
-            }
-        }
-        if (Found =! true) {
-            System.out.println("Imagen no encontrada");
-            return -1;
-        }
-        return -1;
-    }*/
     public void printContentV() {
         NodeV Current = this.first;
         if (this.size != 0) {
-            //System.out.println("----------- Contenido de la cola -----------");
             while (Current.next != null) {
                 System.out.print(Current.value.getName() + ", ");
                 Current = Current.next;
@@ -183,7 +163,6 @@ public class List {
         NodeV Current = this.first;
         boolean Found = false;
         if (this.size != 0) {
-            //System.out.println("----------- Contenido de la cola -----------");
             while (Current != null) {
                 if (Current.value.getClient() != null) {
                     System.out.print(Current.value.getClient().value.getName() + "  ");
@@ -210,6 +189,81 @@ public class List {
                 Current = Current.next;
             }
             System.out.println(Current.value.getName());
+        } else {
+            System.out.println("La lista esta vacía");
+        }
+    }
+
+    public void sortSmallerBW(Cliente valueToAdd) {
+        NodeC myNode = new NodeC(valueToAdd);
+        if (this.first2 == null) {
+            this.first2 = myNode;
+        } else {
+            NodeC Current = this.first2;
+            NodeC Next;
+            while (Current != null) {
+                Next = Current.next;
+                if (myNode.value.getnumImgBW() < Current.value.getnumImgBW()) {
+                    myNode.next = Current;
+                    this.first2 = myNode;
+                    break;
+                } else if (Next == null) {
+                    Current.next = myNode;
+                    break;
+                } else if (myNode.value.getnumImgBW() < Next.value.getnumImgBW()) {
+                    Current.next = myNode;
+                    myNode.next = Next;
+                    break;
+                }
+                Current = Current.next;
+            }
+        }
+        this.size2 += 1;
+    }
+
+    public void sortHigherC(Cliente valueToAdd) {
+        NodeC myNode = new NodeC(valueToAdd);
+        if (this.first2 == null) {
+            this.first2 = myNode;
+        } else {
+            NodeC Current = this.first2;
+            NodeC Next;
+            while (Current != null) {
+                Next = Current.next;
+                if (myNode.value.getnumImgC() > Current.value.getnumImgC()) {
+                    myNode.next = Current;
+                    this.first2 = myNode;
+                    break;
+                } else if (Next == null) {
+                    Current.next = myNode;
+                    break;
+                } else if (myNode.value.getnumImgC() > Next.value.getnumImgC()) {
+                    Current.next = myNode;
+                    myNode.next = Next;
+                    break;
+                }
+                Current = Current.next;
+            }
+        }
+        this.size2 += 1;
+    }
+
+    public void SearchClient(int id) {
+        NodeC Current = this.first2;
+        boolean Found = false;
+        if (this.size2 != 0) {
+            while (Current.next != null) {
+                if (Current.value.getId() == id) {
+                    System.out.print("Nombre: " + Current.value.getName() + ", Imágenes a color: " + Current.value.getnumImgC() + ", Imágenes en BW: " + Current.value.getnumImgBW() + ", Ventanilla que lo atendió: " + Current.value.getvAttended());
+                    Found = true;
+                    break;
+                } else {
+                    Current = Current.next;
+                }
+            }
+            if (Found == false) {
+                System.out.println("Información: Cliente no encontrado");
+            }
         } else {
             System.out.println("La lista esta vacía");
         }

@@ -12,6 +12,9 @@ import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 import proyecto_01.Structures.Nodes.NodeDoubleC;
@@ -38,14 +41,14 @@ public class Main {
 
     public static void loadJson() {
         System.out.println("Ingrese la ruta del archivo JSON: ");
-        //Scanner s = new Scanner(System.in);
-        //String path = s.nextLine();
+        Scanner s = new Scanner(System.in);
+        String path = s.nextLine();
 
         File f;
         FileReader fr = null;
         BufferedReader br;
         String fileContent = "";
-        String path = "C:\\Users\\alexi\\Downloads\\clientes01.json";
+        //String path = "C:\\Users\\alexi\\Downloads\\clientes01.json";
         try {
             f = new File(path);
             fr = new FileReader(f);
@@ -101,10 +104,10 @@ public class Main {
     }
 
     public static void vGenerator() {
-        //Scanner s = new Scanner(System.in);
+        Scanner s = new Scanner(System.in);
         System.out.print("Ingrese la cantidad de ventanillas: ");
-        //int num = s.nextInt();
-        for (int i = 0; i < 2; i++) {
+        int num = s.nextInt();
+        for (int i = 0; i < num; i++) {
             Ventanillas.addV(new Ventanilla((i + 1), ("Ventanilla " + (i + 1)), null, new Pile()));
         }
     }
@@ -398,15 +401,21 @@ public class Main {
         Random r = new Random();
 
         int clients = r.nextInt(4);
-        System.out.println(clients + "----------------");
         if (clients != 0) {
             for (int i = 0; i < clients; i++) {
                 int rNames = r.nextInt(25);
                 int rLastNames = r.nextInt(25);
                 int imagesC = r.nextInt(5);
                 int imagesBW = r.nextInt(5);
-                Clientes.addC(new Cliente((lastId + 1), (names[rNames] + " " + lastnames[rLastNames]), imagesC, imagesBW,
-                        new List(), new List(), false, false, false, 0, ""));
+                if (imagesC == 0 && imagesBW == 0) {
+                    Clientes.addC(new Cliente((lastId + 1), (names[rNames] + " " + lastnames[rLastNames]), (imagesC + 1), (imagesBW + 1),
+                            new List(), new List(), false, false, false, 0, ""));
+                    lastId += 1;
+                } else {
+                    Clientes.addC(new Cliente((lastId + 1), (names[rNames] + " " + lastnames[rLastNames]), imagesC, imagesBW,
+                            new List(), new List(), false, false, false, 0, ""));
+                    lastId += 1;
+                }
             }
         }
     }
@@ -427,6 +436,224 @@ public class Main {
         System.out.println(".................... CLIENTES ATENDIDOS ....................");
         Attended.printContentC();
         System.out.println("\n");
+    }
+
+    public static void topColor() {
+        NodeC Current = Attended.first2;
+        List sort = new List();
+        while (Current != null) {
+            if (sort.size2 <= 5) {
+                sort.sortHigherC(Current.value);
+            }
+            Current = Current.next;
+        }
+        NodeC gCurrent = sort.first2;
+        int cont = 1;
+        while (gCurrent.next != null) {
+            System.out.println(cont + ") Id: " + gCurrent.value.getId() + ", Nombre: " + gCurrent.value.getName() + " , Cantidad de imágenes a color: " + gCurrent.value.getnumImgC());
+            gCurrent = gCurrent.next;
+            cont += 1;
+        }
+    }
+
+    public static void topBW() {
+        NodeC Current = Attended.first2;
+        List sort = new List();
+        while (Current != null) {
+            if (sort.size2 <= 5) {
+                sort.sortSmallerBW(Current.value);
+            }
+            Current = Current.next;
+        }
+        NodeC gCurrent = sort.first2;
+        int cont = 1;
+        while (gCurrent.next != null) {
+            System.out.println(cont + ") Id: " + gCurrent.value.getId() + ", Nombre: " + gCurrent.value.getName() + " , Cantidad de imágenes en BW: " + gCurrent.value.getnumImgBW());
+            gCurrent = gCurrent.next;
+            cont += 1;
+        }
+    }
+
+    public static void moreStepsC() {
+        NodeC Current = Attended.first2;
+        List topClient = new List();
+        while (Current != null) {
+            if (topClient.first2 == null) {
+                topClient.addC(Current.value);
+            } else {
+                if (Current.value.getStepCont() > topClient.first2.value.getStepCont()) {
+                    topClient.removeC(topClient.first2.value.getId());
+                    topClient.addC(Current.value);
+                }
+            }
+            Current = Current.next;
+        }
+        System.out.println("Id: " + topClient.first2.value.getId() + ", Nombre: " + topClient.first2.value.getName() + " , Cantidad de pasos en el sistema: " + topClient.first2.value.getStepCont());
+    }
+
+    public static void drawImage(String text, int choose, int choose2) {
+        createFile(text, choose);
+        ProcessBuilder process = null;
+        if (choose2 == 1) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "recepcion.png", "recepcion.dot");
+        } else if (choose2 == 2) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "ventanillas.png", "ventanillas.dot");
+        } else if (choose2 == 3) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "enEspera.png", "enEspera.dot");
+        } else if (choose2 == 4) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "colaC.png", "colaC.dot");
+        } else if (choose2 == 5) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "colaBW.png", "colaBW.dot");
+        } else if (choose2 == 6) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "atendidos.png", "atendidos.dot");
+        }
+        process.redirectErrorStream(true);
+        try {
+            process.start();
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public static void createFile(String text, int type) {
+        FileWriter f = null;
+        PrintWriter textG = null;
+        try {
+            String cType = "";
+            if (type == 1) {
+                cType = "recepcion.dot";
+            } else if (type == 2) {
+                cType = "ventanillas.dot";
+            } else if (type == 3) {
+                cType = "enEspera.dot";
+            } else if (type == 4) {
+                cType = "colaC.dot";
+            } else if (type == 5) {
+                cType = "colaBW.dot";
+            } else if (type == 6) {
+                cType = "atendidos.dot";
+            }
+            f = new FileWriter(cType);
+            textG = new PrintWriter(f);
+            textG.write(text);
+            textG.close();
+            f.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (textG != null) {
+                textG.close();
+            }
+        }
+    }
+
+    public static String Live(int choose) {
+        String result = "";
+        result += "digraph G {\n";
+        if (choose == 1) {
+            result += "label=\"Cola de recepción\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeC Current = Clientes.first;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Id: " + Current.value.getId() + ", Nombre: " + Current.value.getName() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        } else if (choose == 2) {
+            result += "label=\"Lista de Ventanillas\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeV Current = Ventanillas.first;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Nombre: " + Current.value.getName() + ", Cliente en ventanilla: " + Current.value.getClient().value.getName() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        } else if (choose == 3) {
+            result += "label=\"Lista de Clientes en espera\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeDoubleC Current = Waiting.first;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Id: " + Current.value.getId() + ", Nombre: " + Current.value.getName() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        } else if (choose == 4) {
+            result += "label=\"Cola de impresión a Color\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeImage Current = PrinterC.first2;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Id del cliente: " + Current.value.getIdClient() + ", Pasos que lleva: " + Current.value.getStep() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        } else if (choose == 5) {
+            result += "label=\"Cola de impresión en Blanco y negro\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeImage Current = PrinterBW.first2;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Id del cliente: " + Current.value.getIdClient() + ", Pasos que lleva: " + Current.value.getStep() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        } else if (choose == 6) {
+            result += "label=\"Lista de clientes atendidos\";\n";
+            String conections = "";
+            String nodes = "";
+            NodeC Current = Attended.first2;
+            while (Current != null) {
+                nodes += Current.hashCode() + "[label=\" Id: " + Current.value.getId() + ", Nombre: " + Current.value.getName() + "\"];\n";
+                if (Current.next != null) {
+                    conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
+                }
+                Current = Current.next;
+            }
+            result += nodes;
+            result += "{rank=same;\n";
+            result += conections;
+            result += "}\n";
+            result += "}\n";
+        }
+        return result;
     }
 
     public static void studentData() {
@@ -464,13 +691,15 @@ public class Main {
                 System.out.println("*******************************************");
                 System.out.print("Elige una opcion: ");
                 Scanner s2 = new Scanner(System.in);
-                int option2 = s.nextInt();
+                int option2 = s2.nextInt();
                 switch (option2) {
                     case 1:
                         loadJson();
                         break;
                     case 2:
                         vGenerator();
+                        break;
+                    case 3:
                         break;
                     default:
                         System.out.println("\n");
@@ -480,7 +709,124 @@ public class Main {
             } else if (option == 2) {
                 simulation();
             } else if (option == 3) {
-                liveStructures();
+                System.out.println("\n");
+                System.out.println("**********************************************");
+                System.out.println("*          ESTADO DE LAS ESTRUCTURAS         *");
+                System.out.println("**********************************************");
+                System.out.println("* 1) Cola de recepción                       *");
+                System.out.println("* 2) Lista de ventanillas                    *");
+                System.out.println("* 3) Lista de clientes en espera             *");
+                System.out.println("* 4) Cola de impresión                       *");
+                System.out.println("* 5) Lista de clientes atendidos             *");
+                System.out.println("* 6) Regresar                                *");
+                System.out.println("**********************************************");
+                System.out.print("Elige una opcion: ");
+                Scanner s2 = new Scanner(System.in);
+                int option2 = s2.nextInt();
+                switch (option2) {
+                    case 1:
+                        try {
+                            drawImage(Live(1), 1, 1);
+                            System.out.println("\n");
+                            System.out.println("Información: Reporte generado");
+                        } catch (Exception e) {
+                            System.out.println("\n");
+                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                        }
+                        break;
+                    case 2:
+                        try {
+                            drawImage(Live(2), 2, 2);
+                            System.out.println("\n");
+                            System.out.println("Información: Reporte generado");
+                        } catch (Exception e) {
+                            System.out.println("\n");
+                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                        }
+                        break;
+                    case 3:
+                        try {
+                            drawImage(Live(3), 3, 3);
+                            System.out.println("\n");
+                            System.out.println("Información: Reporte generado");
+                        } catch (Exception e) {
+                            System.out.println("\n");
+                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                        }
+                        break;
+                    case 4:
+                        try {
+                            drawImage(Live(4), 4, 4);
+                            drawImage(Live(5), 5, 5);
+                            System.out.println("\n");
+                            System.out.println("Información: Reportes generados");
+                        } catch (Exception e) {
+                            System.out.println("\n");
+                            System.out.println("Advertencia: Los reportes no fueron generados, intente de nuevo");
+                        }
+                        break;
+                    case 5:
+                        try {
+                            drawImage(Live(6), 6, 6);
+                            System.out.println("\n");
+                            System.out.println("Información: Reporte generado");
+                        } catch (Exception e) {
+                            System.out.println("\n");
+                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                        }
+                        break;
+                    case 6:
+                        break;
+                    default:
+                        System.out.println("\n");
+                        System.out.println("Advertencia: Opción no valida");
+                        break;
+                }
+            } else if (option == 4) {
+                System.out.println("\n");
+                System.out.println("**********************************************");
+                System.out.println("*                   REPORTES                 *");
+                System.out.println("**********************************************");
+                System.out.println("* 1) Top 5 clientes con mas imágenes a color *");
+                System.out.println("* 2) Top 5 clientes con mas imágenes a BW    *");
+                System.out.println("* 3) Cliente con más pasos en el sistema     *");
+                System.out.println("* 4) Información de un cliente específico    *");
+                System.out.println("* 5) Regresar                                *");
+                System.out.println("**********************************************");
+                System.out.print("Elige una opcion: ");
+                Scanner s3 = new Scanner(System.in);
+                int option3 = s3.nextInt();
+                switch (option3) {
+                    case 1:
+                        System.out.println("\n");
+                        System.out.println("........... TOP 5 CLIENTES CON MÁS IMÁGENES A COLOR ...........");
+                        topColor();
+                        break;
+                    case 2:
+                        System.out.println("\n");
+                        System.out.println("........... TOP 5 CLIENTES CON MENOS IMÁGENES EN BW ...........");
+                        topBW();
+                        break;
+                    case 3:
+                        System.out.println("\n");
+                        System.out.println("............. CLIENTE CON MÁS PASOS EN EL SISTEMA .............");
+                        moreStepsC();
+                        break;
+                    case 4:
+                        System.out.println("\n");
+                        System.out.println("................ DATOS DE UN CLIENTE ESPECÍFICO ...............");
+                        System.out.print("Ingrese el id del cliente a buscar: ");
+                        Scanner id = new Scanner(System.in);
+                        Attended.SearchClient(id.nextInt());
+                        System.out.println("\n");
+                        break;
+                    case 5:
+                        break;
+                    default:
+                        System.out.println("\n");
+                        System.out.println("Advertencia: Opción no valida");
+                        break;
+                }
             } else if (option == 5) {
                 studentData();
             } else if (option == 6) {
