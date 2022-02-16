@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import proyecto_01.Structures.Nodes.NodeDoubleC;
 import proyecto_01.Structures.Nodes.NodeImage;
 
@@ -34,29 +37,54 @@ public class Main {
     public static Cola PrinterBW = new Cola();
     public static int globalStep = 0;
     public static int lastId = 0;
+    public static boolean play = true;
 
     public static void main(String[] args) {
         menu();
     }
 
-    public static void loadJson() {
-        System.out.println("Ingrese la ruta del archivo JSON: ");
-        Scanner s = new Scanner(System.in);
-        String path = s.nextLine();
-
-        File f;
-        FileReader fr = null;
-        BufferedReader br;
-        String fileContent = "";
-        //String path = "C:\\Users\\alexi\\Downloads\\clientes01.json";
+    public static String openFileChooser() {
+        String aux = "";
+        String text = "";
+        JFileChooser file;
+        File open;
+        FileReader files = null;
+        BufferedReader read = null;
         try {
-            f = new File(path);
-            fr = new FileReader(f);
-            br = new BufferedReader(fr);
-            String line;
-            while ((line = br.readLine()) != null) {
-                fileContent += line;
+            file = new JFileChooser();
+            file.showOpenDialog(new JFrame());
+            open = file.getSelectedFile();
+            if (open != null) {
+                files = new FileReader(open);
+                read = new BufferedReader(files);
+                while ((aux = read.readLine()) != null) {
+                    text += aux + "\n";
+                }
+                files.close();
+                read.close();
             }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex + ""
+                    + "\nNo se ha encontrado el archivo",
+                    "Información", JOptionPane.WARNING_MESSAGE);
+        } finally {
+            try {
+                files.close();
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+            try {
+                read.close();
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+        }
+        return text;
+    }
+
+    public static void loadJson() {
+        String fileContent = openFileChooser();
+        try {
             JsonParser parser = new JsonParser();
             JsonObject jObject = (JsonObject) parser.parse(fileContent);
             int cont = 1;
@@ -90,16 +118,7 @@ public class Main {
             System.out.println("Archivo leido con éxito");
         } catch (Exception e) {
             System.out.println(e);
-            System.out.println("Entra1");
         } finally {
-            try {
-                if (null != fr) {
-                    fr.close();
-                }
-            } catch (Exception e2) {
-                System.out.println(e2);
-                System.out.println("Entra2s");
-            }
         }
     }
 
@@ -665,7 +684,7 @@ public class Main {
     }
 
     public static void menu() {
-        while (true) {
+        while (play) {
             System.out.println("\n");
             System.out.println("*******************************************");
             System.out.println("*             MENÚ PRINCIPAL              *");
@@ -680,165 +699,174 @@ public class Main {
             System.out.print("Elige una opcion: ");
             Scanner s = new Scanner(System.in);
             int option = s.nextInt();
-            if (option == 1) {
-                System.out.println("\n");
-                System.out.println("*******************************************");
-                System.out.println("*          PARAMETROS INICIALES           *");
-                System.out.println("*******************************************");
-                System.out.println("* 1) Carga masiva                         *");
-                System.out.println("* 2) Cantidad de ventanillas              *");
-                System.out.println("* 3) Regresar                             *");
-                System.out.println("*******************************************");
-                System.out.print("Elige una opcion: ");
-                Scanner s2 = new Scanner(System.in);
-                int option2 = s2.nextInt();
-                switch (option2) {
-                    case 1:
-                        loadJson();
-                        break;
-                    case 2:
-                        vGenerator();
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        System.out.println("\n");
-                        System.out.println("Advertencia: Opción no valida");
-                        break;
+            switch (option) {
+                case 1: {
+                    System.out.println("\n");
+                    System.out.println("*******************************************");
+                    System.out.println("*          PARAMETROS INICIALES           *");
+                    System.out.println("*******************************************");
+                    System.out.println("* 1) Carga masiva                         *");
+                    System.out.println("* 2) Cantidad de ventanillas              *");
+                    System.out.println("* 3) Regresar                             *");
+                    System.out.println("*******************************************");
+                    System.out.print("Elige una opcion: ");
+                    Scanner s2 = new Scanner(System.in);
+                    int option2 = s2.nextInt();
+                    switch (option2) {
+                        case 1:
+                            loadJson();
+                            break;
+                        case 2:
+                            vGenerator();
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            System.out.println("\n");
+                            System.out.println("Advertencia: Opción no valida");
+                            break;
+                    }
+                    break;
                 }
-            } else if (option == 2) {
-                simulation();
-            } else if (option == 3) {
-                System.out.println("\n");
-                System.out.println("**********************************************");
-                System.out.println("*          ESTADO DE LAS ESTRUCTURAS         *");
-                System.out.println("**********************************************");
-                System.out.println("* 1) Cola de recepción                       *");
-                System.out.println("* 2) Lista de ventanillas                    *");
-                System.out.println("* 3) Lista de clientes en espera             *");
-                System.out.println("* 4) Cola de impresión                       *");
-                System.out.println("* 5) Lista de clientes atendidos             *");
-                System.out.println("* 6) Regresar                                *");
-                System.out.println("**********************************************");
-                System.out.print("Elige una opcion: ");
-                Scanner s2 = new Scanner(System.in);
-                int option2 = s2.nextInt();
-                switch (option2) {
-                    case 1:
-                        try {
-                            drawImage(Live(1), 1, 1);
+                case 2:
+                    simulation();
+                    break;
+                case 3: {
+                    System.out.println("\n");
+                    System.out.println("**********************************************");
+                    System.out.println("*          ESTADO DE LAS ESTRUCTURAS         *");
+                    System.out.println("**********************************************");
+                    System.out.println("* 1) Cola de recepción                       *");
+                    System.out.println("* 2) Lista de ventanillas                    *");
+                    System.out.println("* 3) Lista de clientes en espera             *");
+                    System.out.println("* 4) Cola de impresión                       *");
+                    System.out.println("* 5) Lista de clientes atendidos             *");
+                    System.out.println("* 6) Regresar                                *");
+                    System.out.println("**********************************************");
+                    System.out.print("Elige una opcion: ");
+                    Scanner s2 = new Scanner(System.in);
+                    int option2 = s2.nextInt();
+                    switch (option2) {
+                        case 1:
+                            try {
+                                drawImage(Live(1), 1, 1);
+                                System.out.println("\n");
+                                System.out.println("Información: Reporte generado");
+                            } catch (Exception e) {
+                                System.out.println("\n");
+                                System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                            }
+                            break;
+                        case 2:
+                            try {
+                                drawImage(Live(2), 2, 2);
+                                System.out.println("\n");
+                                System.out.println("Información: Reporte generado");
+                            } catch (Exception e) {
+                                System.out.println("\n");
+                                System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                            }
+                            break;
+                        case 3:
+                            try {
+                                drawImage(Live(3), 3, 3);
+                                System.out.println("\n");
+                                System.out.println("Información: Reporte generado");
+                            } catch (Exception e) {
+                                System.out.println("\n");
+                                System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                            }
+                            break;
+                        case 4:
+                            try {
+                                drawImage(Live(4), 4, 4);
+                                drawImage(Live(5), 5, 5);
+                                System.out.println("\n");
+                                System.out.println("Información: Reportes generados");
+                            } catch (Exception e) {
+                                System.out.println("\n");
+                                System.out.println("Advertencia: Los reportes no fueron generados, intente de nuevo");
+                            }
+                            break;
+                        case 5:
+                            try {
+                                drawImage(Live(6), 6, 6);
+                                System.out.println("\n");
+                                System.out.println("Información: Reporte generado");
+                            } catch (Exception e) {
+                                System.out.println("\n");
+                                System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
+                            }
+                            break;
+                        case 6:
+                            break;
+                        default:
                             System.out.println("\n");
-                            System.out.println("Información: Reporte generado");
-                        } catch (Exception e) {
-                            System.out.println("\n");
-                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
-                        }
-                        break;
-                    case 2:
-                        try {
-                            drawImage(Live(2), 2, 2);
-                            System.out.println("\n");
-                            System.out.println("Información: Reporte generado");
-                        } catch (Exception e) {
-                            System.out.println("\n");
-                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
-                        }
-                        break;
-                    case 3:
-                        try {
-                            drawImage(Live(3), 3, 3);
-                            System.out.println("\n");
-                            System.out.println("Información: Reporte generado");
-                        } catch (Exception e) {
-                            System.out.println("\n");
-                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
-                        }
-                        break;
-                    case 4:
-                        try {
-                            drawImage(Live(4), 4, 4);
-                            drawImage(Live(5), 5, 5);
-                            System.out.println("\n");
-                            System.out.println("Información: Reportes generados");
-                        } catch (Exception e) {
-                            System.out.println("\n");
-                            System.out.println("Advertencia: Los reportes no fueron generados, intente de nuevo");
-                        }
-                        break;
-                    case 5:
-                        try {
-                            drawImage(Live(6), 6, 6);
-                            System.out.println("\n");
-                            System.out.println("Información: Reporte generado");
-                        } catch (Exception e) {
-                            System.out.println("\n");
-                            System.out.println("Advertencia: El reporte no fué generado, intente de nuevo");
-                        }
-                        break;
-                    case 6:
-                        break;
-                    default:
-                        System.out.println("\n");
-                        System.out.println("Advertencia: Opción no valida");
-                        break;
+                            System.out.println("Advertencia: Opción no valida");
+                            break;
+                    }
+                    break;
                 }
-            } else if (option == 4) {
-                System.out.println("\n");
-                System.out.println("**********************************************");
-                System.out.println("*                   REPORTES                 *");
-                System.out.println("**********************************************");
-                System.out.println("* 1) Top 5 clientes con mas imágenes a color *");
-                System.out.println("* 2) Top 5 clientes con mas imágenes a BW    *");
-                System.out.println("* 3) Cliente con más pasos en el sistema     *");
-                System.out.println("* 4) Información de un cliente específico    *");
-                System.out.println("* 5) Regresar                                *");
-                System.out.println("**********************************************");
-                System.out.print("Elige una opcion: ");
-                Scanner s3 = new Scanner(System.in);
-                int option3 = s3.nextInt();
-                switch (option3) {
-                    case 1:
-                        System.out.println("\n");
-                        System.out.println("........... TOP 5 CLIENTES CON MÁS IMÁGENES A COLOR ...........");
-                        topColor();
-                        break;
-                    case 2:
-                        System.out.println("\n");
-                        System.out.println("........... TOP 5 CLIENTES CON MENOS IMÁGENES EN BW ...........");
-                        topBW();
-                        break;
-                    case 3:
-                        System.out.println("\n");
-                        System.out.println("............. CLIENTE CON MÁS PASOS EN EL SISTEMA .............");
-                        moreStepsC();
-                        break;
-                    case 4:
-                        System.out.println("\n");
-                        System.out.println("................ DATOS DE UN CLIENTE ESPECÍFICO ...............");
-                        System.out.print("Ingrese el id del cliente a buscar: ");
-                        Scanner id = new Scanner(System.in);
-                        Attended.SearchClient(id.nextInt());
-                        System.out.println("\n");
-                        break;
-                    case 5:
-                        break;
-                    default:
-                        System.out.println("\n");
-                        System.out.println("Advertencia: Opción no valida");
-                        break;
-                }
-            } else if (option == 5) {
-                studentData();
-            } else if (option == 6) {
-                System.out.println("\n");
-                System.out.println("Has salido del programa");
-                System.out.println("\n");
-                break;
-            } else {
-                System.out.println("\n");
-                System.out.println("Advertencia: Opción no valida");
+                case 4:
+                    System.out.println("\n");
+                    System.out.println("**********************************************");
+                    System.out.println("*                   REPORTES                 *");
+                    System.out.println("**********************************************");
+                    System.out.println("* 1) Top 5 clientes con mas imágenes a color *");
+                    System.out.println("* 2) Top 5 clientes con mas imágenes a BW    *");
+                    System.out.println("* 3) Cliente con más pasos en el sistema     *");
+                    System.out.println("* 4) Información de un cliente específico    *");
+                    System.out.println("* 5) Regresar                                *");
+                    System.out.println("**********************************************");
+                    System.out.print("Elige una opcion: ");
+                    Scanner s3 = new Scanner(System.in);
+                    int option3 = s3.nextInt();
+                    switch (option3) {
+                        case 1:
+                            System.out.println("\n");
+                            System.out.println("........... TOP 5 CLIENTES CON MÁS IMÁGENES A COLOR ...........");
+                            topColor();
+                            break;
+                        case 2:
+                            System.out.println("\n");
+                            System.out.println("........... TOP 5 CLIENTES CON MENOS IMÁGENES EN BW ...........");
+                            topBW();
+                            break;
+                        case 3:
+                            System.out.println("\n");
+                            System.out.println("............. CLIENTE CON MÁS PASOS EN EL SISTEMA .............");
+                            moreStepsC();
+                            break;
+                        case 4:
+                            System.out.println("\n");
+                            System.out.println("................ DATOS DE UN CLIENTE ESPECÍFICO ...............");
+                            System.out.print("Ingrese el id del cliente a buscar: ");
+                            Scanner id = new Scanner(System.in);
+                            Attended.SearchClient(id.nextInt());
+                            System.out.println("\n");
+                            break;
+                        case 5:
+                            break;
+                        default:
+                            System.out.println("\n");
+                            System.out.println("Advertencia: Opción no valida");
+                            break;
+                    }
+                    break;
+                case 5:
+                    studentData();
+                    break;
+                case 6:
+                    System.out.println("\n");
+                    System.out.println("Has salido del programa");
+                    System.out.println("\n");
+                    play = false;
+                    break;
+                default:
+                    System.out.println("\n");
+                    System.out.println("Advertencia: Opción no valida");
+                    break;
             }
         }
     }
-
 }
