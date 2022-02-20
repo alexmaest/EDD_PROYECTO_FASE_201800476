@@ -111,13 +111,19 @@ public class Main {
                     imagesBW.addImage(new Image(id, "BW", 0));
                     contBW++;
                 }
-                Cliente newClient = new Cliente(id, name, imgC, imgBW, imagesC, imagesBW, false, false, false, 0, "");
-                lastId = id;
-                Clientes.addC(newClient);
+                if (imgC == 0 || imgBW == 0) {
+                    Cliente newClient = new Cliente(id, name, (imgC + 1), (imgBW + 1), imagesC, imagesBW, false, false, false, 0, "");
+                    lastId = id;
+                    Clientes.addC(newClient);
+                } else {
+                    Cliente newClient = new Cliente(id, name, imgC, imgBW, imagesC, imagesBW, false, false, false, 0, "");
+                    lastId = id;
+                    Clientes.addC(newClient);
+                }
             }
             System.out.println("Archivo leido con éxito");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Información: El archivo no es un Json");
         } finally {
         }
     }
@@ -132,6 +138,7 @@ public class Main {
     }
 
     public static void simulation() {
+
         boolean Active = true;
         while (Active) {
             System.out.println("\n");
@@ -426,7 +433,7 @@ public class Main {
                 int rLastNames = r.nextInt(25);
                 int imagesC = r.nextInt(5);
                 int imagesBW = r.nextInt(5);
-                if (imagesC == 0 && imagesBW == 0) {
+                if (imagesC == 0 || imagesBW == 0) {
                     Clientes.addC(new Cliente((lastId + 1), (names[rNames] + " " + lastnames[rLastNames]), (imagesC + 1), (imagesBW + 1),
                             new List(), new List(), false, false, false, 0, ""));
                     lastId += 1;
@@ -562,6 +569,10 @@ public class Main {
         } finally {
             if (textG != null) {
                 textG.close();
+                try {
+                    f.close();
+                } catch (IOException ex) {
+                }
             }
         }
     }
@@ -590,9 +601,24 @@ public class Main {
             result += "label=\"Lista de Ventanillas\";\n";
             String conections = "";
             String nodes = "";
+            String images = "";
             NodeV Current = Ventanillas.first;
             while (Current != null) {
-                nodes += Current.hashCode() + "[label=\" Nombre: " + Current.value.getName() + ", Cliente en ventanilla: " + Current.value.getClient().value.getName() + "\"];\n";
+                nodes += Current.hashCode() + "[label=\" Nombre: " + Current.value.getName() + ", Id Cliente: " + Current.value.getClient().value.getId() + ", Nombre: " + Current.value.getClient().value.getName() + "\"];\n";
+                NodeImage ni = Current.value.getImages().first;
+                while (ni != null) {
+                    nodes += ni.hashCode() + "[label=\" Tipo: " + ni.value.getType() + ", Cliente al que pertenece: " + ni.value.getIdClient() + "\"];\n";
+                    ni = ni.next;
+                }
+                NodeImage ni2 = Current.value.getImages().first;
+                if (ni2 != null) {
+                    images += Current.hashCode() + "->" + ni2.hashCode() + ";\n";
+                    while (ni2.next != null) {
+                        images += ni2.hashCode() + "->" + ni2.next.hashCode() + ";\n";
+                        ni2 = ni2.next;
+                    }
+                }
+
                 if (Current.next != null) {
                     conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
                 }
@@ -602,6 +628,9 @@ public class Main {
             result += "{rank=same;\n";
             result += conections;
             result += "}\n";
+            result += "{";
+            result += images;
+            result += "}";
             result += "}\n";
         } else if (choose == 3) {
             result += "label=\"Lista de Clientes en espera\";\n";
@@ -609,12 +638,13 @@ public class Main {
             String nodes = "";
             NodeDoubleC Current = Waiting.first;
             while (Current != null) {
-                nodes += Current.hashCode() + "[label=\" Id: " + Current.value.getId() + ", Nombre: " + Current.value.getName() + "\"];\n";
+                nodes += Current.hashCode() + "[label=\" Id: " + Current.value.getId() + ", Nombre: " + Current.value.getName() + ", Img a color actualmente: " + Current.value.getImgC().size3 + ", Img en BW actualmente: " + Current.value.getImgBW().size3 + "\"];\n";
                 if (Current.next != null) {
                     conections += Current.hashCode() + "->" + Current.next.hashCode() + ";\n";
                 }
                 Current = Current.next;
             }
+
             result += nodes;
             result += "{rank=same;\n";
             result += conections;
