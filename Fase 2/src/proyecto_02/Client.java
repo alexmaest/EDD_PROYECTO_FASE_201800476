@@ -6,17 +6,17 @@ package proyecto_02;
  */
 public class Client {
     
-    private int dpi = 0;
+    private long dpi = 0;
     private String name = "";
     private String password = "";
 
-    public Client(int dpi, String name, String password) {
+    public Client(long dpi, String name, String password) {
         this.dpi = dpi;
         this.name = name;
         this.password = password;
     }
 
-    public int getDpi() {
+    public long getDpi() {
         return dpi;
     }
 

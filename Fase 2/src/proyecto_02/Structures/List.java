@@ -1,9 +1,9 @@
 package proyecto_02.Structures;
 
-import proyecto_02.Structures.Nodes.NodeS;
-import proyecto_02.Structures.Nodes.NodeTreeB;
-import proyecto_02.Structures.Nodes.NodeC;
+import proyecto_02.Structures.SubStructure.NodeB;
+import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Client;
+import proyecto_02.Pixel;
 
 /**
  *
@@ -11,27 +11,21 @@ import proyecto_02.Client;
  */
 public class List {
 
-    //Client
-    public NodeC first;
+    //Client | Son | Pixel 
+    public Node first;
     public int size = 0;
-
-    //Son Node
-    public NodeS first2;
-    public int size2 = 0;
 
     public List() {
         this.first = null;
         this.size = 0;
-        this.first2 = null;
-        this.size2 = 0;
     }
 
     public void addC(Client valueToAdd) {
-        NodeC myNode = new NodeC(valueToAdd);
+        Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
             this.first = myNode;
         } else {
-            NodeC Current = this.first;
+            Node Current = this.first;
             while (Current.next != null) {
                 Current = Current.next;
             }
@@ -44,12 +38,12 @@ public class List {
         if (this.size == 0) {
             return false;
         } else {
-            NodeC Current = this.first;
-            NodeC Previous = null;
-            while (Current.value.getDpi() != idClient) {
+            Node Current = this.first;
+            Node Previous = null;
+            while (Current.valuec.getDpi() != idClient) {
                 Previous = Current;
                 Current = Current.next;
-                if (Current.next == null && Current.value.getDpi() != idClient) {
+                if (Current.next == null && Current.valuec.getDpi() != idClient) {
                     System.out.println("Id no encontrado");
                     return false;
                 }
@@ -67,25 +61,25 @@ public class List {
     }
 
     public void printContentC() {
-        NodeC Current = this.first;
+        Node Current = this.first;
         if (this.size != 0) {
             while (Current.next != null) {
-                System.out.print(Current.value.getName() + "    ");
+                System.out.print(Current.valuec.getName() + "    ");
                 Current = Current.next;
             }
-            System.out.println(Current.value.getName());
+            System.out.println(Current.valuec.getName());
         } else {
             System.out.println("La lista esta vacía");
         }
     }
 
     public void SearchClient(int id) {
-        NodeC Current = this.first;
+        Node Current = this.first;
         boolean Found = false;
         if (this.size != 0) {
             while (Current.next != null) {
-                if (Current.value.getDpi() == id) {
-                    System.out.print("Nombre: " + Current.value.getName());
+                if (Current.valuec.getDpi() == id) {
+                    System.out.print("Nombre: " + Current.valuec.getName());
                     Found = true;
                     break;
                 } else {
@@ -100,28 +94,28 @@ public class List {
         }
     }
 
-    public void addSon(NodeTreeB valueToAdd) {
-        NodeS myNode = new NodeS(valueToAdd);
-        if (this.size2 == 0) {
-            this.first2 = myNode;
+    /*public void addSon(NodeB valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.size == 0) {
+            this.first = myNode;
         } else {
-            NodeS Current = this.first2;
+            Node Current = this.first;
             while (Current.next != null) {
                 Current = Current.next;
             }
             Current.next = myNode;
         }
-        this.size2 += 1;
-    }
+        this.size += 1;
+    }*/
 
-    public void printContentSon() {
-        NodeS Current = this.first2;
-        if (this.first2 != null) {
+    /*public void printContentSon() {
+        Node Current = this.first;
+        if (this.first != null) {
             while (Current.next != null) {
-                List values = Current.value.values;
-                NodeC single = values.first;
+                List values = Current.values.values;
+                Node single = values.first;
                 while(single != null){
-                    System.out.println(single.value.getDpi());
+                    System.out.println(single.valuec.getDpi());
                     single = single.next;
                 }
                 Current = Current.next;
@@ -129,6 +123,19 @@ public class List {
         } else {
             System.out.println("La lista esta vacía");
         }
-    }
+    }*/
 
+    public void addPixel(Pixel valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.size == 0) {
+            this.first = myNode;
+        } else {
+            Node Current = this.first;
+            while (Current.next != null) {
+                Current = Current.next;
+            }
+            Current.next = myNode;
+        }
+        this.size += 1;
+    }
 }
