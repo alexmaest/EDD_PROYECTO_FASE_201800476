@@ -1,9 +1,15 @@
 package proyecto_02;
 
-import proyecto_02.Structures.BinaryTree;
-import proyecto_02.Structures.List;
-import proyecto_02.Structures.SubStructure.NodeBinary;
-import proyecto_02.Structures.TreeB;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -11,73 +17,157 @@ import proyecto_02.Structures.TreeB;
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    public static ArrayList<Client> clients = new ArrayList<Client>();
+
     public static void main(String[] args) {
-        //Arbol B
-        TreeB arbolB = new TreeB();
-        arbolB.addValue(new Client(3000L, "Alexis", "123"));
-        arbolB.addValue(new Client(3010L, "Alexis", "123"));
-        arbolB.addValue(new Client(3020L, "Alexis", "123"));
-        arbolB.addValue(new Client(3030L, "Alexis", "123"));
-        arbolB.addValue(new Client(3040L, "Alexis", "123"));
-        arbolB.addValue(new Client(3050L, "Alexis", "123"));
-        arbolB.addValue(new Client(3060L, "Alexis1", "1234"));
-        arbolB.addValue(new Client(3061L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3062L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3063L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3070L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3071L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3072L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3073L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3074L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3075L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3076L, "Alexis2", "1235"));
-        arbolB.addValue(new Client(3080L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3090L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3091L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3100L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3110L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3120L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3130L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3140L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3150L, "Alexis3", "1236"));
-        arbolB.addValue(new Client(3160L, "Alexis3", "1236"));
+        readClientsJson();
+        readAlbumJson();
+        readLayersJson();
+        readImagesJson();
+        readAlbumJson();
+    }
 
-        //arbolB.addValue(new Client(6007201810101L, "Alexis4", "1237"));
-        //arbolB.addValue(new Client(7007201810101L, "Alexis5", "1238"));
-        //arbolB.addValue(new Client(7008201810101L, "Alexis5", "1238"));
-        //arbolB.searchValue(5007201810101L, arbolB.root);
-        //System.out.println(arbolB.printTreeContent(arbolB.root) + " }");
-        /*arbolB.removeValue(3006201810101L, arbolB.root);
-        arbolB.removeValue(6007201810101L, arbolB.root);
-        arbolB.removeValue(7007201810101L, arbolB.root);
-         */
-        arbolB.removeValue(3100L, arbolB.root);
-        arbolB.removeValue(3062L, arbolB.root);
-        System.out.println("-------------------------------");
-        System.out.println(arbolB.printTreeContent(arbolB.root) + "}");
+    public static String openFileChooser() {
+        String aux = "";
+        String text = "";
+        JFileChooser file;
+        File open;
+        FileReader files = null;
+        BufferedReader read = null;
+        try {
+            file = new JFileChooser();
+            file.showOpenDialog(new JFrame());
+            open = file.getSelectedFile();
+            if (open != null) {
+                files = new FileReader(open);
+                read = new BufferedReader(files);
+                while ((aux = read.readLine()) != null) {
+                    text += aux + "\n";
+                }
+                files.close();
+                read.close();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex + ""
+                    + "\nNo se ha encontrado el archivo",
+                    "Información", JOptionPane.WARNING_MESSAGE);
+        } finally {
+            try {
+                files.close();
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+            try {
+                read.close();
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+        }
+        return text;
+    }
 
-        //Arbol binario
-        List pixeles = new List();
-        pixeles.addPixel(new Pixel(0, 0, "rojo"));
-        pixeles.addPixel(new Pixel(1, 0, "azul"));
-        pixeles.addPixel(new Pixel(1, 1, "verde"));
-
-        Layer capa = new Layer(5, pixeles);
-        Layer capa2 = new Layer(4, pixeles);
-        Layer capa3 = new Layer(6, pixeles);
-        Layer capa4 = new Layer(7, pixeles);
-        Layer capa5 = new Layer(1, pixeles);
-
-        BinaryTree arbol = new BinaryTree();
-        arbol.add(new NodeBinary(capa));
-        arbol.add(new NodeBinary(capa2));
-        arbol.add(new NodeBinary(capa3));
-        arbol.add(new NodeBinary(capa4));
-        arbol.add(new NodeBinary(capa5));
-
-        //arbol.preOrder(arbol.getRoot());
+    public static void readClientsJson() {
+        //JFileChooser file;
+        //File open;
+        FileReader files = null;
+        try {
+            //file = new File();
+            //file.showOpenDialog(new JFrame());
+            //open = file.getSelectedFile();
+            //if (open != null) {
+            files = new FileReader("C:\\Users\\alexi\\Downloads\\clientes.json");
+            //}
+            JsonParser parser = new JsonParser();
+            Object obj = parser.parse(files);
+            JsonArray list = (JsonArray) obj;
+            for (int i = 0; i < list.size(); i++) {
+                long id = Long.parseLong(list.get(i).getAsJsonObject().get("dpi").getAsString());
+                String name = list.get(i).getAsJsonObject().get("nombre_cliente").getAsString();
+                String pass = list.get(i).getAsJsonObject().get("password").getAsString();
+                clients.add(new Client(id, name, pass));
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    public static void readLayersJson() {
+        //JFileChooser file;
+        //File open;
+        FileReader files = null;
+        try {
+            //file = new File();
+            //file.showOpenDialog(new JFrame());
+            //open = file.getSelectedFile();
+            //if (open != null) {
+            files = new FileReader("C:\\Users\\alexi\\Downloads\\capas.json");
+            //}
+            JsonParser parser = new JsonParser();
+            Object obj = parser.parse(files);
+            JsonArray list = (JsonArray) obj;
+            for (int i = 0; i < list.size(); i++) {
+                int id = list.get(i).getAsJsonObject().get("id_capa").getAsInt();
+                int pixelsSize = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().size();
+                for (int j = 0; j < pixelsSize; j++) {
+                    int row = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().get(j).getAsJsonObject().get("fila").getAsInt();
+                    int column = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().get(j).getAsJsonObject().get("columna").getAsInt();
+                    String color = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().get(j).getAsJsonObject().get("color").getAsString();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    public static void readImagesJson() {
+        //JFileChooser file;
+        //File open;
+        FileReader files = null;
+        try {
+            //file = new File();
+            //file.showOpenDialog(new JFrame());
+            //open = file.getSelectedFile();
+            //if (open != null) {
+            files = new FileReader("C:\\Users\\alexi\\Downloads\\imagenes.json");
+            //}
+            JsonParser parser = new JsonParser();
+            Object obj = parser.parse(files);
+            JsonArray list = (JsonArray) obj;
+            for (int i = 0; i < list.size(); i++) {
+                int id = list.get(i).getAsJsonObject().get("id").getAsInt();
+                int layersSize = list.get(i).getAsJsonObject().get("capas").getAsJsonArray().size();
+                for (int j = 0; j < layersSize; j++) {
+                    int idLayer = list.get(i).getAsJsonObject().get("capas").getAsJsonArray().get(j).getAsInt();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    public static void readAlbumJson() {
+        //JFileChooser file;
+        //File open;
+        FileReader files = null;
+        try {
+            //file = new File();
+            //file.showOpenDialog(new JFrame());
+            //open = file.getSelectedFile();
+            //if (open != null) {
+            files = new FileReader("C:\\Users\\alexi\\Downloads\\albumes.json");
+            //}
+            JsonParser parser = new JsonParser();
+            Object obj = parser.parse(files);
+            JsonArray list = (JsonArray) obj;
+            for (int i = 0; i < list.size(); i++) {
+                String name = list.get(i).getAsJsonObject().get("nombre_album").getAsString();
+                int imagesSize = list.get(i).getAsJsonObject().get("imgs").getAsJsonArray().size();
+                for (int j = 0; j < imagesSize; j++) {
+                    int imageId = list.get(i).getAsJsonObject().get("imgs").getAsJsonArray().get(j).getAsInt();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }
