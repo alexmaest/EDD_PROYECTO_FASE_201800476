@@ -7,6 +7,7 @@ import proyecto_02.Pixel;
  *
  * @author Alexis
  */
+
 public class Node {
 
     public Client valuec;

@@ -1,5 +1,9 @@
 package proyecto_02;
 
+import proyecto_02.Structures.AvlTree;
+import proyecto_02.Structures.BinaryTree;
+import proyecto_02.Structures.DoubleList;
+
 /**
  *
  * @author Alexis
@@ -9,6 +13,10 @@ public class Client {
     private long dpi = 0;
     private String name = "";
     private String password = "";
+    private AvlTree images;
+    private BinaryTree layers;
+    private DoubleList Album;
+    
 
     public Client(long dpi, String name, String password) {
         this.dpi = dpi;
@@ -38,5 +46,29 @@ public class Client {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public AvlTree getImages() {
+        return images;
+    }
+
+    public void setImages(AvlTree images) {
+        this.images = images;
+    }
+
+    public BinaryTree getLayers() {
+        return layers;
+    }
+
+    public void setLayers(BinaryTree layers) {
+        this.layers = layers;
+    }
+
+    public DoubleList getAlbum() {
+        return Album;
+    }
+
+    public void setAlbum(DoubleList Album) {
+        this.Album = Album;
     }
 }

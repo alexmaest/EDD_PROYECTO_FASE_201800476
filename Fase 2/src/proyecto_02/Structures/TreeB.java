@@ -12,7 +12,9 @@ public class TreeB {
 
     int grade = 5;
     public Branch root;
-    String data = "digraph G {\n";
+    String data = "digraph D {\n"
+            + "\n"
+            + "  node [shape=plaintext]\n";
 
     public TreeB() {
         this.root = null;
@@ -365,6 +367,7 @@ public class TreeB {
     }
 
     private void mergeLeafs(NodeB current, boolean mode, Branch branch) {
+        //System.out.println("current: " + current.getClient().getDpi());
         Branch newBranch = new Branch();
         NodeB currentL = current.getLeft().getFirst();
         while (currentL != null) {
@@ -385,16 +388,19 @@ public class TreeB {
         if (current.getPrevious() != null && current.getNext() != null) {
             current.getPrevious().setNext(current.getNext());
             current.getNext().setPrevious(current.getPrevious());
-        } else if (current.getPrevious() == null) {
+        } else if (current.getPrevious() == null && current.getNext() != null) {
             branch.setFirst(current.getNext());
-        } else if (current.getNext() == null) {
+        } else if (current.getPrevious() != null && current.getNext() == null) {
             current.getPrevious().setNext(null);
         }
-
         if (mode) {
             current.getNext().setLeft(newBranch);
         } else {
-            current.getPrevious().setRight(newBranch);
+            if (current.getPrevious() != null) {
+                current.getPrevious().setRight(newBranch);
+            } else if (current.getPrevious() == null && current.getNext() == null) {
+                this.root = newBranch;
+            }
         }
     }
 
@@ -495,25 +501,24 @@ public class TreeB {
         return null;
     }
 
-    public void searchValue(long dpi, Branch branch) {
+    public Client searchValue(long dpi, Branch branch) {
         if (branch != null) {
             NodeB Current = branch.getFirst();
             while (Current != null) {
                 if (Current.getClient().getDpi() == dpi) {
                     System.out.println("Encontrado");
-                    break;
+                    return Current.getClient();
                 } else if (Current.getClient().getDpi() > dpi) {
-                    searchValue(dpi, Current.getLeft());
-                    break;
+                    return searchValue(dpi, Current.getLeft());
                 } else if (Current.getNext() == null) {
-                    searchValue(dpi, Current.getRight());
-                    break;
+                    return searchValue(dpi, Current.getRight());
                 }
                 Current = Current.getNext();
             }
         } else if (branch == null && branch == this.root) {
             System.out.println("No hay clientes en el sistema");
         }
+        return null;
     }
 
     public void modifyValue(long dpi, String name, String pass, Branch branch) {
@@ -537,77 +542,55 @@ public class TreeB {
         }
     }
 
-    public String printTreeContent(Branch branch) {
+    public int printTreeContent(Branch branch, int cont) {
+        int intern = cont;
         if (branch != null) {
             NodeB Current = branch.getFirst();
+            NodeB node = branch.getFirst();
+            String name = "node" + cont;
+            data += name + "[\n"
+                    + "   label=<\n"
+                    + "     <table border=\"0\" cellborder=\"1\" cellspacing=\"0\">\n"
+                    + "       <tr>";
+            while (node != null) {
+                data += "<td>" + node.getClient().getDpi() + "</td>";
+                node = node.getNext();
+            }
+            data += "</tr>\n"
+                    + "     </table>>\n"
+                    + "  ];\n";
+            int temp = cont;
             while (Current != null) {
-                System.out.println("current: " + Current.getClient().getDpi() + ", size: " + branch.getSize());
-                if (Current.getLeft() != null) {
-                    NodeB CurrentL = Current.getLeft().getFirst();
-                    while (CurrentL != null) {
-                        data += Current.getClient().getDpi() + " -> " + CurrentL.getClient().getDpi() + "\n";
-                        CurrentL = CurrentL.getNext();
-                    }
-                }
+                //System.out.println("current: " + Current.getClient().getDpi() + ", size: " + branch.getSize());
 
                 if (Current.getLeft() != null) {
-                    System.out.println("Empieza left");
-                    printTreeContent(Current.getLeft());
-                    System.out.println("Termina left");
-                }
-                if (Current.getRight() != null) {
-                    NodeB CurrentR = Current.getRight().getFirst();
-                    while (CurrentR != null) {
-                        data += Current.getClient().getDpi() + " -> " + CurrentR.getClient().getDpi() + "\n";
-                        CurrentR = CurrentR.getNext();
+                    if (Current.getLeft().getSize() != 0) {
+                        data += "node" + cont + " -> " + "node" + (temp + 1) + "\n";
+                        temp = printTreeContent(Current.getLeft(), temp + 1);
+                        temp += 1;
                     }
                 }
 
                 if (Current.getRight() != null) {
-                    System.out.println("Empieza right");
-                    printTreeContent(Current.getRight());
-                    System.out.println("Termina right");
+                    if (Current.getRight().getSize() != 0) {
+                        //System.out.println("Empieza right");
+                        data += "node" + cont + " -> " + "node" + (temp + 1) + "\n";
+                        intern = printTreeContent(Current.getRight(), temp + 1);
+                        //System.out.println("Termina right");
+                    }
                 }
-
-                /*if (Current == branch.getFirst() && Current.getNext() == null) {
-                    if (Current.getLeft() != null) {
-                        System.out.println("hijos izquierda");
-                        printTreeContent(Current.getLeft());
-                        System.out.println("Termina izquierda");
-                    }
-                    if (Current.getRight() != null) {
-                        System.out.println("hijos derecha");
-                        printTreeContent(Current.getRight());
-                        System.out.println("Termina derecha");
-                    }
-                } else if (Current == branch.getFirst() && Current.getNext() != null) {
-                    if (Current.getLeft() != null) {
-                        System.out.println("hijos izquierda");
-                        printTreeContent(Current.getLeft());
-                        System.out.println("Termina izquierda");
-                    }
-                } else if (Current.getNext() != null) {
-                    if (Current.getLeft() != null) {
-                        System.out.println("hijos izquierda");
-                        printTreeContent(Current.getLeft());
-                        System.out.println("Termina izquierda");
-                    }
-                } else {
-                    if (Current.getLeft() != null) {
-                        System.out.println("hijos izquierda");
-                        printTreeContent(Current.getLeft());
-                        System.out.println("Termina izquierda");
-                    }
-                    if (Current.getRight() != null) {
-                        System.out.println("hijos derecha");
-                        printTreeContent(Current.getRight());
-                        System.out.println("Termina derecha");
-                    }
-                }*/
                 Current = Current.getNext();
             }
+            intern = temp;
         }
+        return intern;
+    }
+
+    public String getData() {
         return data;
     }
 
+    public void setData(String data) {
+        this.data = data;
+    }
 }
