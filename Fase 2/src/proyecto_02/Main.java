@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import proyecto_02.Structures.AvlTree;
 import proyecto_02.Structures.BinaryTree;
 import proyecto_02.Structures.List;
 import proyecto_02.Structures.SubStructure.NodeBinary;
@@ -24,7 +25,7 @@ import proyecto_02.Structures.TreeB;
  * @author Alexis
  */
 public class Main {
-
+    
     public static TreeB clients = new TreeB();
     //public static BinaryTree layers = new BinaryTree();
 
@@ -36,7 +37,7 @@ public class Main {
         readImagesJson();
         readAlbumJson();*/
     }
-
+    
     public static String openFileChooser() {
         String aux = "";
         String text = "";
@@ -75,7 +76,7 @@ public class Main {
         }
         return text;
     }
-
+    
     public static void readClientsJson() {
         //JFileChooser file;
         //File open;
@@ -105,8 +106,9 @@ public class Main {
             }
         }
     }
-
-    public static void readLayersJson() {
+    
+    public static BinaryTree readLayersJson() {
+        BinaryTree tempTree = new BinaryTree();
         //JFileChooser file;
         //File open;
         FileReader files = null;
@@ -130,7 +132,7 @@ public class Main {
                     String color = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().get(j).getAsJsonObject().get("color").getAsString();
                     pixels.addPixel(new Pixel(row, column, color));
                 }
-                //layers.add(new NodeBinary(new Layer(id, pixels)));
+                tempTree.add(new NodeBinary(new Layer(id, pixels)));
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -140,9 +142,11 @@ public class Main {
             } catch (IOException ex) {
             }
         }
+        return tempTree;
     }
-
-    public static void readImagesJson() {
+    
+    public static AvlTree readImagesJson() {
+        AvlTree tempTree = new AvlTree();
         //JFileChooser file;
         //File open;
         FileReader files = null;
@@ -159,9 +163,15 @@ public class Main {
             for (int i = 0; i < list.size(); i++) {
                 int id = list.get(i).getAsJsonObject().get("id").getAsInt();
                 int layersSize = list.get(i).getAsJsonObject().get("capas").getAsJsonArray().size();
+                List temp = new List();
                 for (int j = 0; j < layersSize; j++) {
                     int idLayer = list.get(i).getAsJsonObject().get("capas").getAsJsonArray().get(j).getAsInt();
+                    NodeBinary founded = Login.currentUser.getLayers().searchNode(idLayer, Login.currentUser.getLayers().getRoot());
+                    if (founded != null) {
+                        temp.addLayer(founded.value);
+                    }
                 }
+                tempTree.insert(new Photo(id, temp));
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -171,8 +181,9 @@ public class Main {
             } catch (IOException ex) {
             }
         }
+        return tempTree;
     }
-
+    
     public static void readAlbumJson() {
         //JFileChooser file;
         //File open;
@@ -203,7 +214,7 @@ public class Main {
             }
         }
     }
-
+    
     public static void menu() {
         boolean play = true;
         while (play) {
@@ -265,7 +276,7 @@ public class Main {
             }
         }
     }
-
+    
     public static void adminMenu() {
         boolean play = true;
         while (play) {
@@ -340,7 +351,7 @@ public class Main {
             }
         }
     }
-
+    
     public static void createFile(String text) {
         FileWriter f = null;
         PrintWriter textG = null;
@@ -364,7 +375,7 @@ public class Main {
             }
         }
     }
-
+    
     public static void imageGenerator(String text) {
         createFile(text);
         ProcessBuilder process = null;

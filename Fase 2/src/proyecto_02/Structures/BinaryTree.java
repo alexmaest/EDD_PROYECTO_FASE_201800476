@@ -10,6 +10,7 @@ import proyecto_02.Structures.SubStructure.NodeBinary;
 public class BinaryTree {
 
     NodeBinary root;
+    public List graphLayers = new List();
 
     public BinaryTree() {
         this.root = null;
@@ -96,11 +97,11 @@ public class BinaryTree {
         System.out.println("Valor eliminado con éxito");
     }
 
-    public NodeBinary obtainReplacingNode(NodeBinary replace){
+    public NodeBinary obtainReplacingNode(NodeBinary replace) {
         NodeBinary replaceFather = replace;
         NodeBinary replaceAux = replace;
         NodeBinary aux = replace.right;
-        while(aux != null){
+        while (aux != null) {
             replaceFather = replaceAux;
             replaceAux = aux;
             aux = aux.left;
@@ -111,10 +112,11 @@ public class BinaryTree {
         }
         return replaceAux;
     }
-    
+
     public void preOrder(NodeBinary node) {
         if (node != null) {
-            System.out.println(node.value.getId());
+            graphLayers.addLayer(node.value);
+            //System.out.println(node.value.getId());
             preOrder(node.left);
             preOrder(node.right);
         }
@@ -122,7 +124,8 @@ public class BinaryTree {
 
     public void inOrder(NodeBinary node) {
         if (node != null) {
-            System.out.println(node.value.getId());
+            graphLayers.addLayer(node.value);
+            //System.out.println(node.value.getId());
             inOrder(node.right);
             inOrder(node.left);
         }
@@ -132,12 +135,31 @@ public class BinaryTree {
         if (node != null) {
             postOrder(node.left);
             postOrder(node.right);
-            System.out.println(node.value.getId());
+            graphLayers.addLayer(node.value);
+            //System.out.println(node.value.getId());
         }
+    }
+
+    public NodeBinary searchNode(int id, NodeBinary node) {
+        if (node.value.getId() == id) {
+            return node;
+        } else if (node.value.getId() < id) {
+            return searchNode(id, node.left);
+        } else if (node.value.getId() > id) {
+            return searchNode(id, node.right);
+        }
+        return null;
     }
 
     public NodeBinary getRoot() {
         return root;
     }
 
+    public List getGraphLayers() {
+        return graphLayers;
+    }
+
+    public void setGraphLayers(List graphLayers) {
+        this.graphLayers = graphLayers;
+    }
 }

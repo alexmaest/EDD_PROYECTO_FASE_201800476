@@ -156,7 +156,6 @@ public class DelForm extends javax.swing.JFrame {
     private void modBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modBActionPerformed
         // TODO add your handling code here:
         long dpi = Long.parseLong((String)clientsCB.getSelectedItem());
-        System.out.println("-> " + dpi);
         clients.removeValue(dpi, clients.root);
         this.dispose();
     }//GEN-LAST:event_modBActionPerformed

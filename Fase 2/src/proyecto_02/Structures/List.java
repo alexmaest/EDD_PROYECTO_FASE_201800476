@@ -1,8 +1,9 @@
 package proyecto_02.Structures;
 
-import proyecto_02.Structures.SubStructure.NodeB;
 import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Client;
+import proyecto_02.Layer;
+import proyecto_02.Photo;
 import proyecto_02.Pixel;
 
 /**
@@ -11,7 +12,7 @@ import proyecto_02.Pixel;
  */
 public class List {
 
-    //Client | Son | Pixel 
+    //Client | Pixel | Layer | Image
     public Node first;
     public int size = 0;
 
@@ -126,6 +127,34 @@ public class List {
     }*/
 
     public void addPixel(Pixel valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.size == 0) {
+            this.first = myNode;
+        } else {
+            Node Current = this.first;
+            while (Current.next != null) {
+                Current = Current.next;
+            }
+            Current.next = myNode;
+        }
+        this.size += 1;
+    }
+    
+    public void addLayer(Layer valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.size == 0) {
+            this.first = myNode;
+        } else {
+            Node Current = this.first;
+            while (Current.next != null) {
+                Current = Current.next;
+            }
+            Current.next = myNode;
+        }
+        this.size += 1;
+    }
+    
+    public void addImage(Photo valueToAdd) {
         Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
             this.first = myNode;

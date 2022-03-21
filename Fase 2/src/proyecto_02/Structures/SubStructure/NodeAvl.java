@@ -1,14 +1,18 @@
 package proyecto_02.Structures.SubStructure;
 
+import proyecto_02.Photo;
+
 /**
  *
  * @author Alexis
  */
 public class NodeAvl {
-    public int dato, fe;
+
+    public Photo dato;
+    public int fe;
     public NodeAvl left, right;
-    
-    public NodeAvl(int d){
+
+    public NodeAvl(Photo d) {
         this.dato = d;
         this.fe = 0;
         this.left = null;

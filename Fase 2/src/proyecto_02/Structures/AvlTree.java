@@ -1,5 +1,6 @@
 package proyecto_02.Structures;
 
+import proyecto_02.Photo;
 import proyecto_02.Structures.SubStructure.NodeAvl;
 
 /**
@@ -8,7 +9,8 @@ import proyecto_02.Structures.SubStructure.NodeAvl;
  */
 public class AvlTree {
 
-    private NodeAvl root;
+    public NodeAvl root;
+    public List images;
 
     public AvlTree() {
         this.root = null;
@@ -17,9 +19,9 @@ public class AvlTree {
     public NodeAvl Search(int d, NodeAvl r) {
         if (this.root == null) {
             return null;
-        } else if (r.dato == d) {
+        } else if (r.dato.getId() == d) {
             return r;
-        } else if (r.dato < d) {
+        } else if (r.dato.getId() < d) {
             return Search(d, r.right);
         } else {
             return Search(d, r.left);
@@ -34,7 +36,7 @@ public class AvlTree {
         }
     }
 
-    public NodeAvl rotateLeft(NodeAvl c) {
+    private NodeAvl rotateLeft(NodeAvl c) {
         NodeAvl aux = c.left;
         c.left = aux.right;
         aux.right = c;
@@ -43,7 +45,7 @@ public class AvlTree {
         return aux;
     }
 
-    public NodeAvl rotateRight(NodeAvl c) {
+    private NodeAvl rotateRight(NodeAvl c) {
         NodeAvl aux = c.right;
         c.right = aux.left;
         aux.left = c;
@@ -52,14 +54,14 @@ public class AvlTree {
         return aux;
     }
 
-    public NodeAvl rotateDoubleLeft(NodeAvl c) {
+    private NodeAvl rotateDoubleLeft(NodeAvl c) {
         NodeAvl aux;
         c.left = rotateRight(c.left);
         aux = rotateLeft(c);
         return aux;
     }
 
-    public NodeAvl rotateDoubleRight(NodeAvl c) {
+    private NodeAvl rotateDoubleRight(NodeAvl c) {
         NodeAvl aux;
         c.right = rotateLeft(c.right);
         aux = rotateRight(c);
@@ -68,26 +70,26 @@ public class AvlTree {
 
     private NodeAvl Add(NodeAvl newValue, NodeAvl subNode) {
         NodeAvl newFather = subNode;
-        if (newValue.dato < subNode.dato) {
+        if (newValue.dato.getId() < subNode.dato.getId()) {
             if (subNode.left == null) {
                 subNode.left = newValue;
             } else {
                 subNode.left = Add(newValue, subNode.left);
                 if ((obtainFE(subNode.left) - obtainFE(subNode.right)) == 2) {
-                    if (newValue.dato < subNode.left.dato) {
+                    if (newValue.dato.getId() < subNode.left.dato.getId()) {
                         newFather = rotateDoubleLeft(subNode);
                     } else {
                         newFather = rotateDoubleRight(subNode);
                     }
                 }
             }
-        } else if (newValue.dato > subNode.dato) {
+        } else if (newValue.dato.getId() > subNode.dato.getId()) {
             if (subNode.right == null) {
                 subNode.right = newValue;
             } else {
                 subNode.right = Add(newValue, subNode.right);
                 if ((obtainFE(subNode.right) - obtainFE(subNode.left)) == 2) {
-                    if (newValue.dato > subNode.right.dato) {
+                    if (newValue.dato.getId() > subNode.right.dato.getId()) {
                         newFather = rotateRight(subNode);
                     } else {
                         newFather = rotateDoubleRight(subNode);
@@ -108,7 +110,7 @@ public class AvlTree {
         return newFather;
     }
 
-    public void insert(int d) {
+    public void insert(Photo d) {
         NodeAvl newValue = new NodeAvl(d);
         if (this.root == null) {
             this.root = newValue;
@@ -138,6 +140,14 @@ public class AvlTree {
             postOrder(node.left);
             postOrder(node.right);
             System.out.println(node.dato);
+        }
+    }
+    
+    public void fillComboBox(NodeAvl node) {
+        if (node != null) {
+            images.addImage(node.dato);
+            inOrder(node.right);
+            inOrder(node.left);
         }
     }
 }
