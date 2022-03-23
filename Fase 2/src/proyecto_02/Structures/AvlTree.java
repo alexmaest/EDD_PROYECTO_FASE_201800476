@@ -1,7 +1,12 @@
 package proyecto_02.Structures;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import proyecto_02.Photo;
+import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Structures.SubStructure.NodeAvl;
+import proyecto_02.Structures.SubStructure.NodeBinary;
 
 /**
  *
@@ -10,7 +15,8 @@ import proyecto_02.Structures.SubStructure.NodeAvl;
 public class AvlTree {
 
     public NodeAvl root;
-    public List images;
+    public List images = new List();
+    public String imagesTreeText = "";
 
     public AvlTree() {
         this.root = null;
@@ -77,9 +83,9 @@ public class AvlTree {
                 subNode.left = Add(newValue, subNode.left);
                 if ((obtainFE(subNode.left) - obtainFE(subNode.right)) == 2) {
                     if (newValue.dato.getId() < subNode.left.dato.getId()) {
-                        newFather = rotateDoubleLeft(subNode);
+                        newFather = rotateLeft(subNode);
                     } else {
-                        newFather = rotateDoubleRight(subNode);
+                        newFather = rotateDoubleLeft(subNode);
                     }
                 }
             }
@@ -92,7 +98,7 @@ public class AvlTree {
                     if (newValue.dato.getId() > subNode.right.dato.getId()) {
                         newFather = rotateRight(subNode);
                     } else {
-                        newFather = rotateDoubleRight(subNode);
+                        newFather = rotateRight(subNode);
                     }
                 }
             }
@@ -119,35 +125,136 @@ public class AvlTree {
         }
     }
 
+    public void generateGraphTree() {
+        this.imagesTreeText = "";
+        String gText = "digraph G {\n"
+                + "node [shape=square];\n";
+        preOrder(this.root);
+        gText += this.imagesTreeText
+                + "label=\"Arbol de imágenes utilizadas\";\n"
+                + "}";
+        drawImage(gText, 1);
+    }
+
+    public static void drawImage(String text, int type) {
+        createFile(text, type);
+        ProcessBuilder process = null;
+        if (type == 1) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "imagesTree.png", "imagesTree.dot");
+        } else if (type == 2) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "imagesTreeLayers.png", "imagesTreeLayers.dot");
+        }
+        process.redirectErrorStream(true);
+        try {
+            process.start();
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public static void createFile(String text, int type) {
+        FileWriter f = null;
+        PrintWriter textG = null;
+        try {
+            if (type == 1) {
+                f = new FileWriter("imagesTree.dot");
+            }
+            if (type == 2) {
+                f = new FileWriter("imagesTreeLayers.dot");
+            }
+            textG = new PrintWriter(f);
+            textG.write(text);
+            textG.close();
+            f.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (textG != null) {
+                textG.close();
+                try {
+                    f.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
     public void preOrder(NodeAvl node) {
-        if (node != null) {
-            System.out.println(node.dato);
+        imagesTreeText += node.dato.getId() + "\n";
+        //System.out.println(dato);
+        if (node.left != null) {
+            imagesTreeText += node.dato.getId() + " -> " + node.left.dato.getId() + "\n";
             preOrder(node.left);
+        }
+        if (node.right != null) {
+            imagesTreeText += node.dato.getId() + " -> " + node.right.dato.getId() + "\n";
             preOrder(node.right);
         }
     }
 
-    public void inOrder(NodeAvl node) {
-        if (node != null) {
-            System.out.println(node.dato);
-            inOrder(node.right);
-            inOrder(node.left);
+    public void generateGraphTreeAndLayers(int idImage) {
+        this.imagesTreeText = "";
+        String gText = "digraph G {\n";
+        preOrderTwo(this.root, idImage);
+        gText += this.imagesTreeText
+                + "label=\"Arbol de imágenes y capas\";\n"
+                + "}";
+        drawImage(gText, 2);
+    }
+
+    public void preOrderTwo(NodeAvl node, int idImage) {
+        imagesTreeText += "node [shape=square];\n";
+        imagesTreeText += "Imagen" + node.dato.getId() + "\n";
+        if (idImage == node.dato.getId()) {
+            BinaryTree bt = new BinaryTree();
+            Node layer = node.dato.getLayers().first;
+            while (layer != null) {
+                bt.add(new NodeBinary(layer.valuel));
+                layer = layer.next;
+            }
+            imagesTreeText += "node [shape=oval];\n";
+            imagesTreeText += "Imagen" + node.dato.getId() + " -> Capa" + bt.root.value.getId() + "\n";
+            innerTree(bt.root);
+        }
+        //System.out.println(dato);
+        if (node.left != null) {
+            imagesTreeText += "node [shape=square];\n";
+            imagesTreeText += "Imagen" + node.dato.getId() + " -> Imagen" + node.left.dato.getId() + "\n";
+            preOrderTwo(node.left, idImage);
+        }
+        if (node.right != null) {
+            imagesTreeText += "node [shape=square];\n";
+            imagesTreeText += "Imagen" + node.dato.getId() + " -> Imagen" + node.right.dato.getId() + "\n";
+            preOrderTwo(node.right, idImage);
         }
     }
 
-    public void postOrder(NodeAvl node) {
-        if (node != null) {
-            postOrder(node.left);
-            postOrder(node.right);
-            System.out.println(node.dato);
+    private void innerTree(NodeBinary node) {
+        if (node.left != null) {
+            imagesTreeText += "node [shape=oval];\n";
+            imagesTreeText += "Capa" + node.value.getId() + " -> Capa" + node.left.value.getId() + "\n";
+            innerTree(node.left);
+        }
+        if (node.right != null) {
+            imagesTreeText += "node [shape=oval];\n";
+            imagesTreeText += "Capa" + node.value.getId() + " -> Capa" + node.right.value.getId() + "\n";
+            innerTree(node.right);
         }
     }
-    
+
+    public void inOrder(NodeAvl node) {
+        this.root.inOrder();
+    }
+
+    public void postOrder(NodeAvl node) {
+        this.root.postOrder();
+    }
+
     public void fillComboBox(NodeAvl node) {
         if (node != null) {
             images.addImage(node.dato);
-            inOrder(node.right);
-            inOrder(node.left);
+            fillComboBox(node.left);
+            fillComboBox(node.right);
         }
     }
 }

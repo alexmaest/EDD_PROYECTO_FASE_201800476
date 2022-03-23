@@ -18,4 +18,24 @@ public class NodeAvl {
         this.left = null;
         this.right = null;
     }
+
+    public void inOrder() {
+        if (left != null) {
+            left.inOrder();
+        }
+        System.out.println(dato);
+        if (right != null) {
+            right.inOrder();
+        }
+    }
+
+    public void postOrder() {
+        if (left != null) {
+            left.postOrder();
+        }
+        if (right != null) {
+            right.postOrder();
+        }
+        System.out.println(dato);
+    }
 }

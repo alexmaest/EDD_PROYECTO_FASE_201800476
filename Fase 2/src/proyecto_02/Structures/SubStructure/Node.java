@@ -1,5 +1,6 @@
 package proyecto_02.Structures.SubStructure;
 
+import proyecto_02.AmplitudeObject;
 import proyecto_02.Client;
 import proyecto_02.Layer;
 import proyecto_02.Photo;
@@ -17,6 +18,7 @@ public class Node {
     public Pixel valuep;
     public Layer valuel;
     public Photo valuei;
+    public AmplitudeObject valueao;
 
 
     public Node next;
@@ -43,6 +45,11 @@ public class Node {
     
     public Node(Photo value) {
         this.valuei = value;
+        this.next = null;
+    }
+    
+    public Node(AmplitudeObject value) {
+        this.valueao = value;
         this.next = null;
     }
 }

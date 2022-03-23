@@ -1,5 +1,6 @@
 package proyecto_02.Structures;
 
+import proyecto_02.AmplitudeObject;
 import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Client;
 import proyecto_02.Layer;
@@ -12,9 +13,11 @@ import proyecto_02.Pixel;
  */
 public class List {
 
-    //Client | Pixel | Layer | Image
+    //Client | Pixel | Layer | Image | AmplitudeObject
     public Node first;
     public int size = 0;
+    public int maxRow = 0;
+    public int maxCol = 0;
 
     public List() {
         this.first = null;
@@ -74,6 +77,32 @@ public class List {
         }
     }
 
+    public void printContentP() {
+        System.out.println("size: " + this.size);
+        Node Current = this.first;
+        if (this.size != 0) {
+            while (Current != null) {
+                System.out.println("row: " + Current.valuep.getRow() + ", column: " + Current.valuep.getColumn() + ", color: " + Current.valuep.getColor());
+                Current = Current.next;
+            }
+        } else {
+            System.out.println("La lista esta vacía");
+        }
+    }
+
+    public void printContentL() {
+        System.out.println("size: " + this.size);
+        Node Current = this.first;
+        if (this.size != 0) {
+            while (Current != null) {
+                System.out.println("id: " + Current.valuel.getId());
+                Current = Current.next;
+            }
+        } else {
+            System.out.println("La lista esta vacía");
+        }
+    }
+    
     public void SearchClient(int id) {
         Node Current = this.first;
         boolean Found = false;
@@ -95,37 +124,6 @@ public class List {
         }
     }
 
-    /*public void addSon(NodeB valueToAdd) {
-        Node myNode = new Node(valueToAdd);
-        if (this.size == 0) {
-            this.first = myNode;
-        } else {
-            Node Current = this.first;
-            while (Current.next != null) {
-                Current = Current.next;
-            }
-            Current.next = myNode;
-        }
-        this.size += 1;
-    }*/
-
-    /*public void printContentSon() {
-        Node Current = this.first;
-        if (this.first != null) {
-            while (Current.next != null) {
-                List values = Current.values.values;
-                Node single = values.first;
-                while(single != null){
-                    System.out.println(single.valuec.getDpi());
-                    single = single.next;
-                }
-                Current = Current.next;
-            }
-        } else {
-            System.out.println("La lista esta vacía");
-        }
-    }*/
-
     public void addPixel(Pixel valueToAdd) {
         Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
@@ -139,7 +137,7 @@ public class List {
         }
         this.size += 1;
     }
-    
+
     public void addLayer(Layer valueToAdd) {
         Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
@@ -153,7 +151,7 @@ public class List {
         }
         this.size += 1;
     }
-    
+
     public void addImage(Photo valueToAdd) {
         Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
@@ -164,6 +162,59 @@ public class List {
                 Current = Current.next;
             }
             Current.next = myNode;
+        }
+        this.size += 1;
+    }
+
+    public void addAObject(AmplitudeObject valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.size == 0) {
+            this.first = myNode;
+        } else {
+            Node Current = this.first;
+            while (Current.next != null) {
+                Current = Current.next;
+            }
+            Current.next = myNode;
+        }
+        this.size += 1;
+    }
+
+    public void sortPixels(Pixel valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.first == null) {
+            this.first = myNode;
+            if (myNode.valuep.getRow() > maxRow) {
+                maxRow = myNode.valuep.getRow();
+            }
+            if (myNode.valuep.getColumn() > maxCol) {
+                maxCol = myNode.valuep.getColumn();
+            }
+        } else {
+            Node Current = this.first;
+            Node Next;
+            while (Current != null) {
+                Next = Current.next;
+                if (myNode.valuep.getRow() > maxRow) {
+                    maxRow = myNode.valuep.getRow();
+                }
+                if (myNode.valuep.getColumn() > maxCol) {
+                    maxCol = myNode.valuep.getColumn();
+                }
+                if (myNode.valuep.getRow() <= Current.valuep.getRow() && myNode.valuep.getColumn() <= Current.valuep.getColumn()) {
+                    myNode.next = Current;
+                    this.first = myNode;
+                    break;
+                } else if (Next == null) {
+                    Current.next = myNode;
+                    break;
+                } else if (myNode.valuep.getRow() < Next.valuep.getRow() && myNode.valuep.getColumn() > Next.valuep.getColumn()) {
+                    Current.next = myNode;
+                    myNode.next = Next;
+                    break;
+                }
+                Current = Current.next;
+            }
         }
         this.size += 1;
     }

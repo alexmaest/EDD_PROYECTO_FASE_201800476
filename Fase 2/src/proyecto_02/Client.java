@@ -15,7 +15,7 @@ public class Client {
     private String password = "";
     private AvlTree images;
     private BinaryTree layers;
-    private DoubleList Album;
+    private DoubleList Albums;
     
 
     public Client(long dpi, String name, String password) {
@@ -64,11 +64,11 @@ public class Client {
         this.layers = layers;
     }
 
-    public DoubleList getAlbum() {
-        return Album;
+    public DoubleList getAlbums() {
+        return Albums;
     }
 
-    public void setAlbum(DoubleList Album) {
-        this.Album = Album;
+    public void setAlbums(DoubleList Albums) {
+        this.Albums = Albums;
     }
 }

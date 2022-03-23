@@ -16,7 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import proyecto_02.Structures.AvlTree;
 import proyecto_02.Structures.BinaryTree;
+import proyecto_02.Structures.DoubleList;
 import proyecto_02.Structures.List;
+import proyecto_02.Structures.SparceMatrix;
+import proyecto_02.Structures.SubStructure.NodeAvl;
 import proyecto_02.Structures.SubStructure.NodeBinary;
 import proyecto_02.Structures.TreeB;
 
@@ -53,6 +56,7 @@ public class Main {
                 files = new FileReader(open);
                 read = new BufferedReader(files);
                 while ((aux = read.readLine()) != null) {
+                    //System.out.println(aux);
                     text += aux + "\n";
                 }
                 files.close();
@@ -109,18 +113,10 @@ public class Main {
     
     public static BinaryTree readLayersJson() {
         BinaryTree tempTree = new BinaryTree();
-        //JFileChooser file;
-        //File open;
-        FileReader files = null;
         try {
-            //file = new File();
-            //file.showOpenDialog(new JFrame());
-            //open = file.getSelectedFile();
-            //if (open != null) {
-            files = new FileReader("C:\\Users\\alexi\\Downloads\\capas.json");
-            //}
             JsonParser parser = new JsonParser();
-            Object obj = parser.parse(files);
+            System.out.println("Cargando...");
+            Object obj = parser.parse(openFileChooser());
             JsonArray list = (JsonArray) obj;
             for (int i = 0; i < list.size(); i++) {
                 int id = list.get(i).getAsJsonObject().get("id_capa").getAsInt();
@@ -136,29 +132,15 @@ public class Main {
             }
         } catch (Exception e) {
             System.out.println(e);
-        } finally {
-            try {
-                files.close();
-            } catch (IOException ex) {
-            }
         }
         return tempTree;
     }
     
     public static AvlTree readImagesJson() {
         AvlTree tempTree = new AvlTree();
-        //JFileChooser file;
-        //File open;
-        FileReader files = null;
         try {
-            //file = new File();
-            //file.showOpenDialog(new JFrame());
-            //open = file.getSelectedFile();
-            //if (open != null) {
-            files = new FileReader("C:\\Users\\alexi\\Downloads\\imagenes.json");
-            //}
             JsonParser parser = new JsonParser();
-            Object obj = parser.parse(files);
+            Object obj = parser.parse(openFileChooser());
             JsonArray list = (JsonArray) obj;
             for (int i = 0; i < list.size(); i++) {
                 int id = list.get(i).getAsJsonObject().get("id").getAsInt();
@@ -166,53 +148,46 @@ public class Main {
                 List temp = new List();
                 for (int j = 0; j < layersSize; j++) {
                     int idLayer = list.get(i).getAsJsonObject().get("capas").getAsJsonArray().get(j).getAsInt();
-                    NodeBinary founded = Login.currentUser.getLayers().searchNode(idLayer, Login.currentUser.getLayers().getRoot());
-                    if (founded != null) {
+                    if (Login.currentUser.getLayers().searchNode(idLayer, Login.currentUser.getLayers().getRoot()) != null) {
+                        NodeBinary founded = Login.currentUser.getLayers().searchNode(idLayer, Login.currentUser.getLayers().getRoot());
                         temp.addLayer(founded.value);
+                    } else {
+                        System.out.println("Capa no encontrada");
                     }
                 }
                 tempTree.insert(new Photo(id, temp));
             }
         } catch (Exception e) {
             System.out.println(e);
-        } finally {
-            try {
-                files.close();
-            } catch (IOException ex) {
-            }
         }
         return tempTree;
     }
     
-    public static void readAlbumJson() {
-        //JFileChooser file;
-        //File open;
-        FileReader files = null;
+    public static DoubleList readAlbumJson() {
+        DoubleList albums = new DoubleList();
         try {
-            //file = new File();
-            //file.showOpenDialog(new JFrame());
-            //open = file.getSelectedFile();
-            //if (open != null) {
-            files = new FileReader("C:\\Users\\alexi\\Downloads\\albumes.json");
-            //}
             JsonParser parser = new JsonParser();
-            Object obj = parser.parse(files);
+            Object obj = parser.parse(openFileChooser());
             JsonArray list = (JsonArray) obj;
             for (int i = 0; i < list.size(); i++) {
                 String name = list.get(i).getAsJsonObject().get("nombre_album").getAsString();
                 int imagesSize = list.get(i).getAsJsonObject().get("imgs").getAsJsonArray().size();
+                List images = new List();
                 for (int j = 0; j < imagesSize; j++) {
                     int imageId = list.get(i).getAsJsonObject().get("imgs").getAsJsonArray().get(j).getAsInt();
+                    if (Login.currentUser.getImages().Search(imageId, Login.currentUser.getImages().root) != null) {
+                        NodeAvl founded = Login.currentUser.getImages().Search(imageId, Login.currentUser.getImages().root);
+                        images.addImage(founded.dato);
+                    } else {
+                        System.out.println("Capa no encontrada");
+                    }
                 }
+                albums.add(new Album(name, images));
             }
         } catch (Exception e) {
             System.out.println(e);
-        } finally {
-            try {
-                files.close();
-            } catch (IOException ex) {
-            }
         }
+        return albums;
     }
     
     public static void menu() {
