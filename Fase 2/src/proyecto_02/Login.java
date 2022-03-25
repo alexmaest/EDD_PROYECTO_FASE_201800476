@@ -176,10 +176,10 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        /*String user = userTB.getText();
-        String pass = passTB.getText();*/
-        String user = "1000";
-        String pass = "pass123";
+        String user = userTB.getText();
+        String pass = passTB.getText();
+        /*String user = "1000";
+        String pass = "pass123";*/
         if (user.equals("admin") && pass.equals("EDD2022")) {
             this.dispose();
             AdminUI a = new AdminUI();

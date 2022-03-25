@@ -16,6 +16,7 @@ public class AvlTree {
 
     public NodeAvl root;
     public List images = new List();
+    public List sortImages = new List();
     public String imagesTreeText = "";
 
     public AvlTree() {
@@ -143,6 +144,8 @@ public class AvlTree {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "imagesTree.png", "imagesTree.dot");
         } else if (type == 2) {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "imagesTreeLayers.png", "imagesTreeLayers.dot");
+        } else if (type == 3) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "top5Images.png", "top5Images.dot");
         }
         process.redirectErrorStream(true);
         try {
@@ -158,9 +161,10 @@ public class AvlTree {
         try {
             if (type == 1) {
                 f = new FileWriter("imagesTree.dot");
-            }
-            if (type == 2) {
+            } else if (type == 2) {
                 f = new FileWriter("imagesTreeLayers.dot");
+            } else if (type == 3) {
+                f = new FileWriter("top5Images.dot");
             }
             textG = new PrintWriter(f);
             textG.write(text);
@@ -256,5 +260,43 @@ public class AvlTree {
             fillComboBox(node.left);
             fillComboBox(node.right);
         }
+    }
+
+    public void top5Images(NodeAvl node) {
+        if (node != null) {
+            if (!sortImages.SearchPhoto(node.dato.getId())) {
+                sortImages.sortHigherPhoto(node.dato);
+                top5Images(node.left);
+                top5Images(node.right);
+            }
+        }
+    }
+
+    public void top5ImagesGraph() {
+        Node current = sortImages.first;
+        String gText = "digraph {\n"
+                + "  node [ shape=none fontname=Helvetica ]\n"
+                + "  n [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Id de imagen</td>\n"
+                + "         <td bgcolor=\"#ccccff\">Cantidad de capas</td>\n"
+                + "       </tr>";
+        int cont = 1;
+        while (current != null) {
+            if (cont == 5) {
+                break;
+            }
+            gText += "         <tr>\n"
+                    + "         <td bgcolor=\"#ccffcc\">" + current.valuei.getId() + "</td>\n"
+                    + "         <td bgcolor=\"#ffcccc\">" + current.valuei.getLayers().size + "</td>"
+                    + "       </tr>";
+            current = current.next;
+            cont += 1;
+        }
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "label = \"Top 5 imágenes con más capas\";}";
+        drawImage(gText, 3);
     }
 }

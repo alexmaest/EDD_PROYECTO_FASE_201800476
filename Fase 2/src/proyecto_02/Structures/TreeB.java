@@ -1,8 +1,14 @@
 package proyecto_02.Structures;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import proyecto_02.AmplitudeObject;
 import proyecto_02.Client;
 import proyecto_02.Structures.SubStructure.Branch;
+import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Structures.SubStructure.NodeB;
+import proyecto_02.Structures.SubStructure.NodeDouble;
 
 /**
  *
@@ -11,7 +17,9 @@ import proyecto_02.Structures.SubStructure.NodeB;
 public class TreeB {
 
     int grade = 5;
+    int gradeNodes;
     public Branch root;
+    public static List levelNodes = new List();
     String data = "digraph D {\n"
             + "\n"
             + "  node [shape=plaintext]\n";
@@ -592,5 +600,205 @@ public class TreeB {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public void generateSearchGraph(Client cliente) {
+        cliente.getImages().images = new List();
+        cliente.getLayers().graphLayers = new List();
+        cliente.getImages().fillComboBox(cliente.getImages().root);
+        cliente.getLayers().preOrder(cliente.getLayers().root);
+        String gText = "digraph {\n"
+                + "  node [ shape=none fontname=Helvetica ]\n"
+                + "  n [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Nombre</td>\n"
+                + "         <td bgcolor=\"#ffcccc\">" + cliente.getName() + "</td>\n"
+                + "       </tr>"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">DPI</td>\n"
+                + "         <td bgcolor=\"#ffcccc\">" + cliente.getDpi() + "</td>\n"
+                + "       </tr>"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Cantidad de imágenes</td>\n"
+                + "         <td bgcolor=\"#ffcccc\">" + cliente.getImages().images.size + "</td>\n"
+                + "       </tr>"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Cantidad de capas</td>\n"
+                + "         <td bgcolor=\"#ffcccc\">" + cliente.getLayers().graphLayers.size + "</td>\n"
+                + "       </tr>";
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "  n2 [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Nombre album</td>\n"
+                + "         <td bgcolor=\"#ccccff\">Cantidad de imágenes</td>\n"
+                + "       </tr>";
+        NodeDouble current = cliente.getAlbums().first;
+        while (current != null) {
+            gText += "       <tr>\n"
+                    + "         <td bgcolor=\"#ffcccc\">" + current.getValue().getName() + "</td>\n"
+                    + "         <td bgcolor=\"#ffcccc\">" + current.getValue().getImages().size + "</td>\n"
+                    + "       </tr>";
+            current = current.getNext();
+        }
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "label = \"Información del cliente " + cliente.getName() + "\";}";
+        drawImage(gText, 1);
+    }
+
+    private void treeGrade(Branch branch, int level) {
+        if (branch != null) {
+            NodeB currently = branch.getFirst();
+            while (currently != null) {
+                treeGrade(currently.getLeft(), level + 1);
+                currently = currently.getNext();
+            }
+            if (level > gradeNodes) {
+                gradeNodes = level;
+            }
+            NodeB currently2 = branch.getFirst();
+            while (currently2 != null) {
+                treeGrade(currently2.getRight(), level + 1);
+                currently2 = currently2.getNext();
+            }
+        }
+    }
+
+    public int amplitudeOrder() {
+        gradeNodes = 0;
+        treeGrade(this.root, 0);
+        return gradeNodes;
+    }
+
+    public void printLevel() {
+        levelNodes = new List();
+        printLevelNodes(this.root, 0);
+    }
+
+    private void printLevelNodes(Branch branch, int currentLevel) {
+        if (branch != null) {
+            Node currentNode = levelNodes.first;
+            while (currentNode != null) {
+                if (currentNode.valueao.getIndex() == currentLevel) {
+                    break;
+                }
+                currentNode = currentNode.next;
+            }
+            if (currentNode != null) {
+                List temp = new List();
+                NodeB currently = branch.getFirst();
+                while (currently != null) {
+                    temp.addC(currently.getClient());
+                    currently = currently.getNext();
+                }
+                Node current = currentNode.valueao.getLayers().first;
+                while (current != null) {
+                    temp.addC(current.valuec);
+                    current = current.next;
+                }
+                currentNode.valueao = new AmplitudeObject(currentLevel, temp);
+            } else {
+                List temp = new List();
+                NodeB currently = branch.getFirst();
+                while (currently != null) {
+                    temp.addC(currently.getClient());
+                    currently = currently.getNext();
+                }
+                levelNodes.addAObject(new AmplitudeObject(currentLevel, temp));
+            }
+            NodeB currently = branch.getFirst();
+            while (currently != null) {
+                printLevelNodes(currently.getLeft(), currentLevel + 1);
+                printLevelNodes(currently.getRight(), currentLevel + 1);
+                currently = currently.getNext();
+            }
+        }
+    }
+
+    public static void drawImage(String text, int type) {
+        createFile(text, type);
+        ProcessBuilder process = null;
+        if (type == 1) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "searchGraph.png", "searchGraph.dot");
+        } else if (type == 2) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "clientsGraph.png", "clientsGraph.dot");
+        }
+        process.redirectErrorStream(true);
+        try {
+            process.start();
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public static void createFile(String text, int type) {
+        FileWriter f = null;
+        PrintWriter textG = null;
+        try {
+            if (type == 1) {
+                f = new FileWriter("searchGraph.dot");
+            } else if (type == 2) {
+                f = new FileWriter("clientsGraph.dot");
+            }
+            textG = new PrintWriter(f);
+            textG.write(text);
+            textG.close();
+            f.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (textG != null) {
+                textG.close();
+                try {
+                    f.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }
+
+    public static void clientsGraph() {
+        Node current = levelNodes.first;
+        String gText = "digraph {\n"
+                + "  node [ shape=none fontname=Helvetica ]\n"
+                + "  n [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Nivel</td>\n"
+                + "         <td bgcolor=\"#ccccff\">Nombre</td>\n"
+                + "         <td bgcolor=\"#ccccff\">DPI</td>\n"
+                + "         <td bgcolor=\"#ccccff\">Cantidad de imágenes</td>\n"
+                + "       </tr>";
+        while (current != null) {
+            Node current2 = current.valueao.getLayers().first;
+            while (current2 != null) {
+                if (current2.valuec.getImages() != null) {
+                    current2.valuec.getImages().images = new List();
+                    current2.valuec.getImages().fillComboBox(current2.valuec.getImages().root);
+                    gText += "         <tr>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current.valueao.getIndex() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getName() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getDpi() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getImages().images.size + "</td>\n"
+                            + "       </tr>";
+                } else {
+                    gText += "         <tr>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current.valueao.getIndex() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getName() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getDpi() + "</td>\n"
+                            + "         <td bgcolor=\"#ffcccc\">0</td>\n"
+                            + "       </tr>";
+                }
+                current2 = current2.next;
+            }
+            current = current.next;
+        }
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "label = \"Lista de clientes por niveles\";}";
+        drawImage(gText, 2);
     }
 }

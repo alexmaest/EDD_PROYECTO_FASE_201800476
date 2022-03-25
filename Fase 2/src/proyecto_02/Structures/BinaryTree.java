@@ -19,8 +19,9 @@ public class BinaryTree {
 
     NodeBinary root;
     public List graphLayers = new List();
+    public List leafLayers = new List();
     public List levels;
-    int grade;
+    public int grade;
     String imagesTreeText = "";
 
     public BinaryTree() {
@@ -127,7 +128,7 @@ public class BinaryTree {
     public void preOrder(NodeBinary node) {
         if (node != null) {
             graphLayers.addLayer(node.value);
-            //System.out.println(node.value.getId());
+            //System.out.println("Added: " + node.value.getId());
             preOrder(node.left);
             preOrder(node.right);
         }
@@ -459,30 +460,138 @@ public class BinaryTree {
 
     public void generateGraphMatrix(int idLayer) {
         NodeBinary found = searchNode(idLayer, this.root);
-        preOrder(found);
-        String gText = "digraph TrafficLights {\n"
-                + "node=[shape=box];\n";
         SparceMatrix sorted = new SparceMatrix();
-        Node currentPixel = graphLayers.first;
+        Node currentPixel = found.value.getPixels().first;
         while (currentPixel != null) {
-            sorted.addNode(currentPixel.valuep.getRow(), currentPixel.valuep.getColumn(), currentPixel.valuep.getColor());
+            sorted.addNode(currentPixel.valuep.getColumn(), currentPixel.valuep.getRow(), currentPixel.valuep.getColor());
             currentPixel = currentPixel.next;
         }
+        String gText = "digraph Sparce_Matrix {\n"
+                + "    node [shape=box]\n"
+                + "    Mt[label=\"Capa " + found.value.getId() + "\",width=1.5,style=filled,fillcolor=lightblue,group=\"-1\"];\n"
+                + "    e0[ shape = point, width = 0 ];\n"
+                + "    e1[ shape = point, width = 0 ];\n";
+        //Vertical
         NodeMatrix aux = sorted.root;
         while (aux != null) {
             NodeMatrix aux2 = aux;
-            String row = "";
-            while (aux2 != null) {
-                if (aux2.next == null) {
-                    row += "x"+aux2.x + "y"+aux2.y;
-                } else {
-                    row += "x"+aux2.x + "y"+aux2.y+",";
-                }
-                aux2 = aux2.next;
+            if (aux2.x == -1 && aux2.y == -1) {
+            } else {
+                gText += "\"x" + aux2.x + "y" + aux2.y + "\"" + "[label=\"" + aux2.y + "\" pos=\"5.3,3.5!\" width = 1.5 style=filled,fillcolor=white,group=\"-1\"];\n";
             }
-            gText += "rank=same {" + row + "}\n";
             aux = aux.down;
         }
+        NodeMatrix aux2 = sorted.root;
+        while (aux2 != null) {
+            NodeMatrix aux3 = aux2;
+            if (aux3.down != null) {
+                if (aux3.x == -1 && aux3.y == -1) {
+                    gText += "Mt -> \"x" + aux3.down.x + "y" + aux3.down.y + "\"\n";
+                } else {
+                    if (aux3.up != null) {
+                        if (aux3.up.y != -1) {
+                            gText += "\"x" + aux3.x + "y" + aux3.y + "\" -> \"x" + aux3.up.x + "y" + aux3.up.y + "\"\n";
+                        }
+                    }
+                    if (aux3.down.down == null) {
+                        gText += "\"x" + aux3.down.x + "y" + aux3.down.y + "\" -> \"x" + aux3.x + "y" + aux3.y + "\"\n";
+                    }
+                    gText += "\"x" + aux3.x + "y" + aux3.y + "\" -> \"x" + aux3.down.x + "y" + aux3.down.y + "\"\n";
+                }
+            }
+            aux2 = aux2.down;
+        }
+        //Horizontal
+        NodeMatrix aux3 = sorted.root;
+        while (aux3 != null) {
+            NodeMatrix aux4 = aux3;
+            while (aux4 != null) {
+                if (aux4.x == -1 && aux4.y == -1) {
+                } else {
+                    gText += "\"x" + aux4.x + "y" + aux4.y + "\"" + "[label=\"" + aux4.x + "\" width = 1.5 style=filled,fillcolor=white,group=\"" + aux4.x + "\"];\n";
+                }
+                aux4 = aux4.next;
+            }
+            break;
+        }
+        NodeMatrix aux4 = sorted.root;
+        String horizontal = "";
+        while (aux4 != null) {
+            NodeMatrix aux5 = aux4;
+            while (aux5.next != null) {
+                if (aux5.x == -1 && aux5.y == -1) {
+                    horizontal += "Mt;";
+                    gText += "Mt -> \"x" + aux5.next.x + "y" + aux5.next.y + "\"\n";
+                } else {
+                    if (aux5.next.next == null) {
+                        horizontal += "\"x" + aux5.next.x + "y" + aux5.next.y + "\";";
+                        gText += "\"x" + aux5.next.x + "y" + aux5.next.y + "\" -> \"x" + aux5.x + "y" + aux5.y + "\"\n";
+                    }
+                    if (aux5.previous != null) {
+                        if (aux5.previous.x != -1) {
+                            gText += "\"x" + aux5.x + "y" + aux5.y + "\" -> \"x" + aux5.previous.x + "y" + aux5.previous.y + "\"\n";
+                        }
+                    }
+                    horizontal += "\"x" + aux5.x + "y" + aux5.y + "\";";
+                    gText += "\"x" + aux5.x + "y" + aux5.y + "\" -> \"x" + aux5.next.x + "y" + aux5.next.y + "\"\n";
+                }
+                aux5 = aux5.next;
+            }
+            break;
+        }
+        gText += "{rank=same;" + horizontal + "}\n";
+        NodeMatrix aux5 = sorted.root;
+        while (aux5 != null) {
+            NodeMatrix aux6 = aux5;
+            while (aux6 != null) {
+                if (aux6.x == -1 || aux6.y == -1) {
+                } else {
+                    gText += "\"x" + aux6.x + "y" + aux6.y + "\"[style=filled,fillcolor=black,width=1.5,group=\"" + aux6.x + "\"];\n";
+                }
+                aux6 = aux6.next;
+            }
+            aux5 = aux5.down;
+        }
+        NodeMatrix aux6 = sorted.root;
+        while (aux6 != null) {
+            NodeMatrix aux7 = aux6;
+            String row = "";
+            while (aux7 != null) {
+                if (aux7.x == -1 || aux7.y == -1) {
+                    if (aux7.x == -1 && aux7.y != -1) {
+                        row += "\"x" + aux7.x + "y" + aux7.y + "\";";
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.next.x + "y" + aux7.next.y + "\"\n";
+                    }
+                    if (aux7.x != -1 && aux7.y == -1) {
+                        row += "\"x" + aux7.x + "y" + aux7.y + "\";";
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.down.x + "y" + aux7.down.y + "\"\n";
+                    }
+                } else {
+                    if (aux7.next != null) {
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.next.x + "y" + aux7.next.y + "\"\n";
+                        row += "\"x" + aux7.x + "y" + aux7.y + "\";";
+                        if (aux7.next.next == null) {
+                            row += "\"x" + aux7.next.x + "y" + aux7.next.y + "\";";
+                        }
+                    }
+                    if (aux7.previous != null) {
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.previous.x + "y" + aux7.previous.y + "\"\n";
+                    }
+
+                    if (aux7.up != null) {
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.up.x + "y" + aux7.up.y + "\"\n";
+                    }
+                    /*if (aux7.down != null) {
+                        gText += "\"x" + aux7.x + "y" + aux7.y + "\" -> \"x" + aux7.down.x + "y" + aux7.down.y + "\"\n";
+                    }*/
+                }
+                aux7 = aux7.next;
+            }
+            gText += "{rank=same;" + row + "}\n";
+            aux6 = aux6.down;
+        }
+        gText += "}";
+        drawImage(gText, 5);
         System.out.println(gText);
     }
 
@@ -497,6 +606,12 @@ public class BinaryTree {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "multiLayersImage.png", "multiLayersImage.dot");
         } else if (type == 4) {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "layersTree.png", "layersTree.dot");
+        } else if (type == 5) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "layerMatrix.png", "layerMatrix.dot");
+        } else if (type == 6) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "layersLeaf.png", "layersLeaf.dot");
+        } else if (type == 7) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "layersList.png", "layersList.dot");
         }
         process.redirectErrorStream(true);
         try {
@@ -518,6 +633,12 @@ public class BinaryTree {
                 f = new FileWriter("multiLayersImage.dot");
             } else if (type == 4) {
                 f = new FileWriter("layersTree.dot");
+            } else if (type == 5) {
+                f = new FileWriter("layerMatrix.dot");
+            } else if (type == 6) {
+                f = new FileWriter("layersLeaf.dot");
+            } else if (type == 7) {
+                f = new FileWriter("layersList.dot");
             }
             textG = new PrintWriter(f);
             textG.write(text);
@@ -562,4 +683,58 @@ public class BinaryTree {
     public void setGraphLayers(List graphLayers) {
         this.graphLayers = graphLayers;
     }
+
+    public void allLeafs(NodeBinary node) {
+        if (node != null) {
+            if (node.left == null && node.right == null) {
+                leafLayers.addLayer(node.value);
+            }
+            allLeafs(node.left);
+            allLeafs(node.right);
+        }
+    }
+
+    public void allLeafsGraph() {
+        Node current = leafLayers.first;
+        String gText = "digraph {\n"
+                + "  node [ shape=none fontname=Helvetica ]\n"
+                + "  n [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Id de la capa</td>\n"
+                + "       </tr>";
+        while (current != null) {
+            gText += "         <tr>\n"
+                    + "         <td bgcolor=\"#ffcccc\"> Capa " + current.valuel.getId() + "</td>\n"
+                    + "       </tr>";
+            current = current.next;
+        }
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "label = \"Todas las capas que son hojas\";}";
+
+        drawImage(gText, 6);
+    }
+
+    public void listLayers(String type) {
+        Node current = graphLayers.first;
+        String gText = "digraph {\n"
+                + "  node [ shape=none fontname=Helvetica ]\n"
+                + "  n [ label = <\n"
+                + "    <table bgcolor=\"black\">"
+                + "       <tr>\n"
+                + "         <td bgcolor=\"#ccccff\">Id de la capa</td>\n"
+                + "       </tr>";
+        while (current != null) {
+            gText += "         <tr>\n"
+                    + "         <td bgcolor=\"#ffcccc\"> Capa " + current.valuel.getId() + "</td>\n"
+                    + "       </tr>";
+            current = current.next;
+        }
+        gText += "</table>\n"
+                + "  > ]\n"
+                + "label = \"Lista de capas en "+ type +"\";}";
+        drawImage(gText, 7);
+    }
+
 }

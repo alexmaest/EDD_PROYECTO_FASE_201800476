@@ -124,6 +124,26 @@ public class List {
         }
     }
 
+    public boolean SearchPhoto(int id) {
+        Node Current = this.first;
+        boolean Found = false;
+        if (this.size != 0) {
+            while (Current.next != null) {
+                if (Current.valuei.getId()== id) {
+                    return true;
+                } else {
+                    Current = Current.next;
+                }
+            }
+            if (Found == false) {
+                return false;
+            }
+        } else {
+            System.out.println("La lista esta vacía");
+        }
+        return false;
+    }
+    
     public void addPixel(Pixel valueToAdd) {
         Node myNode = new Node(valueToAdd);
         if (this.size == 0) {
@@ -209,6 +229,33 @@ public class List {
                     Current.next = myNode;
                     break;
                 } else if (myNode.valuep.getRow() < Next.valuep.getRow() && myNode.valuep.getColumn() > Next.valuep.getColumn()) {
+                    Current.next = myNode;
+                    myNode.next = Next;
+                    break;
+                }
+                Current = Current.next;
+            }
+        }
+        this.size += 1;
+    }
+
+    public void sortHigherPhoto(Photo valueToAdd) {
+        Node myNode = new Node(valueToAdd);
+        if (this.first == null) {
+            this.first = myNode;
+        } else {
+            Node Current = this.first;
+            Node Next;
+            while (Current != null) {
+                Next = Current.next;
+                if (myNode.valuei.getLayers().size > Current.valuei.getLayers().size) {
+                    myNode.next = Current;
+                    this.first = myNode;
+                    break;
+                } else if (Next == null) {
+                    Current.next = myNode;
+                    break;
+                } else if (myNode.valuei.getLayers().size > Next.valuei.getLayers().size) {
                     Current.next = myNode;
                     myNode.next = Next;
                     break;

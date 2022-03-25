@@ -13,16 +13,16 @@ import proyecto_02.Structures.SubStructure.NodeB;
  *
  * @author Alexis
  */
-public class DelForm extends javax.swing.JFrame {
+public class SearchForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form DelForm
+     * Creates new form SearchForm
      */
-    public DelForm() {
+    public SearchForm() {
         initComponents();
         clientsCB.removeAllItems();
         fillComboBox(Main.clients.root);
-        this.setDefaultCloseOperation(DelForm.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(SearchForm.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -51,7 +51,7 @@ public class DelForm extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Dialog", 3, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 153, 0));
-        jLabel1.setText("Eliminar cliente");
+        jLabel1.setText("Buscar cliente");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -77,7 +77,7 @@ public class DelForm extends javax.swing.JFrame {
 
         modB.setBackground(new java.awt.Color(0, 51, 255));
         modB.setForeground(new java.awt.Color(255, 255, 255));
-        modB.setText("Eliminar");
+        modB.setText("Buscar");
         modB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modBActionPerformed(evt);
@@ -157,7 +157,9 @@ public class DelForm extends javax.swing.JFrame {
     private void modBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modBActionPerformed
         // TODO add your handling code here:
         long dpi = Long.parseLong((String) clientsCB.getSelectedItem());
-        clients.removeValue(dpi, clients.root);
+        Client found = clients.searchValue(dpi, clients.root);
+        clients.generateSearchGraph(found);
+        AdminUI.showSearhGraph();
         this.dispose();
     }//GEN-LAST:event_modBActionPerformed
 
@@ -183,20 +185,20 @@ public class DelForm extends javax.swing.JFrame {
             }
 
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DelForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DelForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DelForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DelForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SearchForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DelForm().setVisible(true);
+                new SearchForm().setVisible(true);
             }
         });
 
