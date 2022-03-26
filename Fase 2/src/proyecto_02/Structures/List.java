@@ -63,6 +63,32 @@ public class List {
         }
         return true;
     }
+    
+    public boolean removeImage(int idImage) {
+        if (this.size == 0) {
+            return false;
+        } else {
+            Node Current = this.first;
+            Node Previous = null;
+            while (Current.valuei.getId()!= idImage) {
+                Previous = Current;
+                Current = Current.next;
+                if (Current.next == null && Current.valuei.getId() != idImage) {
+                    System.out.println("Id no encontrado");
+                    return false;
+                }
+            }
+            if (Previous == null) {
+                this.first = Current.next;
+                Current.next = null;
+            } else if (Current != null) {
+                Previous.next = Current.next;
+                Current.next = null;
+            }
+            this.size -= 1;
+        }
+        return true;
+    }
 
     public void printContentC() {
         Node Current = this.first;

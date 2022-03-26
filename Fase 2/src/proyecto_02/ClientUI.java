@@ -64,6 +64,13 @@ public class ClientUI extends javax.swing.JFrame {
         structureCB.addItem("Árbol de imágenes");
         structureCB.addItem("Árbol de capas");
         structureCB.addItem("Listado de albumes");
+        if (Login.currentUser.getLayers() != null) {
+            fillNumLayerCB();
+            fillIdLayerAddCB();
+        }
+        if (Login.currentUser.getImages()!= null) {
+            fillImagesCB();
+        }
     }
 
     /**
@@ -1816,10 +1823,16 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
+        DelImage di = new DelImage();
+        di.setLocationRelativeTo(null);
+        di.setVisible(true);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        AddImage ai = new AddImage();
+        ai.setLocationRelativeTo(null);
+        ai.setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -1853,6 +1866,10 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        Login l = new Login();
+        l.setLocationRelativeTo(null);
+        l.setVisible(true);
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
@@ -1893,6 +1910,10 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        Login l = new Login();
+        l.setLocationRelativeTo(null);
+        l.setVisible(true);
     }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -1929,6 +1950,10 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        Login l = new Login();
+        l.setLocationRelativeTo(null);
+        l.setVisible(true);
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
@@ -1957,6 +1982,10 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        Login l = new Login();
+        l.setLocationRelativeTo(null);
+        l.setVisible(true);
     }//GEN-LAST:event_jButton27ActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
@@ -2009,6 +2038,7 @@ public class ClientUI extends javax.swing.JFrame {
     private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed
         // TODO add your handling code here:
         String type = (String) layersListCB.getSelectedItem();
+        System.out.println(type);
         Login.currentUser.getLayers().graphLayers = new List();
         switch (type) {
             case "Inorden":
@@ -2024,6 +2054,11 @@ public class ClientUI extends javax.swing.JFrame {
                 Login.currentUser.getLayers().listLayers("Postorden");
                 break;
         }
+        ImageIcon iconLogo = new ImageIcon("layersList.png");
+        Image image = iconLogo.getImage();
+        Image newimg = image.getScaledInstance(350, 300, Image.SCALE_AREA_AVERAGING);
+        ImageIcon imageIcon = new ImageIcon(newimg);
+        screen6.setIcon(imageIcon);
     }//GEN-LAST:event_jButton31ActionPerformed
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
@@ -2056,7 +2091,7 @@ public class ClientUI extends javax.swing.JFrame {
         }
     }
 
-    private void fillImagesCB() {
+    public static void fillImagesCB() {
         imagesCB.removeAllItems();
         structureCB1.removeAllItems();
         Login.currentUser.getImages().images = new List();
@@ -2138,7 +2173,7 @@ public class ClientUI extends javax.swing.JFrame {
     private javax.swing.JLabel imageLabel5;
     private javax.swing.JLabel imageLabel6;
     private javax.swing.JLabel imageLabel7;
-    private javax.swing.JComboBox<String> imagesCB;
+    public static javax.swing.JComboBox<String> imagesCB;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton13;
@@ -2231,7 +2266,7 @@ public class ClientUI extends javax.swing.JFrame {
     private javax.swing.JLabel selectedLayersLabel1;
     private javax.swing.JLabel selectedLayersLabel2;
     private javax.swing.JComboBox<String> structureCB;
-    private javax.swing.JComboBox<String> structureCB1;
+    public static javax.swing.JComboBox<String> structureCB1;
     private javax.swing.JComboBox<String> structureCB2;
     private javax.swing.JPanel treePanel1;
     private javax.swing.JPanel treePanel2;

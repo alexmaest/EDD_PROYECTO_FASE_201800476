@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import proyecto_02.Structures.AvlTree;
 import proyecto_02.Structures.BinaryTree;
 import proyecto_02.Structures.DoubleList;
@@ -30,10 +31,20 @@ import proyecto_02.Structures.TreeB;
 public class Main {
     
     public static TreeB clients = new TreeB();
-    //public static BinaryTree layers = new BinaryTree();
 
     public static void main(String[] args) {
-        adminMenu();
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+        }
+        Login l = new Login();
+        l.setVisible(true);
+        //adminMenu();
         /*readClientsJson();
         readAlbumJson();
         readLayersJson();
@@ -82,18 +93,9 @@ public class Main {
     }
     
     public static void readClientsJson() {
-        //JFileChooser file;
-        //File open;
-        FileReader files = null;
         try {
-            //file = new File();
-            //file.showOpenDialog(new JFrame());
-            //open = file.getSelectedFile();
-            //if (open != null) {
-            files = new FileReader("C:\\Users\\alexi\\Downloads\\clientes.json");
-            //}
             JsonParser parser = new JsonParser();
-            Object obj = parser.parse(files);
+            Object obj = parser.parse(openFileChooser());
             JsonArray list = (JsonArray) obj;
             for (int i = 0; i < list.size(); i++) {
                 long id = Long.parseLong(list.get(i).getAsJsonObject().get("dpi").getAsString());
@@ -103,11 +105,6 @@ public class Main {
             }
         } catch (Exception e) {
             System.out.println(e);
-        } finally {
-            try {
-                files.close();
-            } catch (IOException ex) {
-            }
         }
     }
     

@@ -612,6 +612,8 @@ public class BinaryTree {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "layersLeaf.png", "layersLeaf.dot");
         } else if (type == 7) {
             process = new ProcessBuilder("dot", "-Tpng", "-o", "layersList.png", "layersList.dot");
+        } else if (type == 8) {
+            process = new ProcessBuilder("dot", "-Tpng", "-o", "clientsGraph.png", "clientsGraph.dot");
         }
         process.redirectErrorStream(true);
         try {
@@ -639,6 +641,8 @@ public class BinaryTree {
                 f = new FileWriter("layersLeaf.dot");
             } else if (type == 7) {
                 f = new FileWriter("layersList.dot");
+            } else if (type == 8) {
+                f = new FileWriter("clientsGraph.dot");
             }
             textG = new PrintWriter(f);
             textG.write(text);

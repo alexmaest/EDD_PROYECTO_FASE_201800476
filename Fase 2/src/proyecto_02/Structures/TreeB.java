@@ -36,7 +36,6 @@ public class TreeB {
         } else {
             NodeB obj = addInBranch(newValue, this.root);
             if (obj != null) {
-                //si devuelve algo el metodo de insertar en rama quiere decir que creo una nueva rama, y se debe insertar en el arbol
                 this.root = new Branch();
                 this.root.addNode(obj);
                 this.root.setLeaf(false);
@@ -48,7 +47,6 @@ public class TreeB {
         if (branch.isLeaf()) {
             branch.addNode(newValue);
             if (branch.getSize() == grade) {
-                //si ya se insertaron todos los elementos posibles se debe dividir la rama
                 returnLast(branch);
                 return split(branch);
             } else {
@@ -96,7 +94,6 @@ public class TreeB {
         int cont = 0;
         while (current != null) {
             cont++;
-            //implementacion para dividir unicamente ramas de 4 nodos
             if (cont < 3) {
                 temp = new NodeB(current.getClient());
                 temp.setLeft(current.getLeft());
@@ -105,7 +102,6 @@ public class TreeB {
                 } else {
                     temp.setRight(current.getRight());
                 }
-                //si la rama posee ramas deja de ser hoja
                 if (temp.getLeft() != null || temp.getRight() != null) {
                     branchL.setLeaf(false);
                 }
@@ -117,7 +113,6 @@ public class TreeB {
                 temp = new NodeB(current.getClient());
                 temp.setLeft(current.getLeft());
                 temp.setRight(current.getRight());
-                //si la rama posee ramas deja de ser hoja
                 if (temp.getRight() != null || temp.getLeft() != null) {
                     branchR.setLeaf(false);
                 }
@@ -218,7 +213,6 @@ public class TreeB {
                             branch.setSize(branch.getSize() - 1);
                         }
                     } else {
-                        //System.out.println(current.getLeft().getSize() + " =? " + current.getRight().getSize());
                         if (current.getLeft().getSize() < 2 && current.getRight().getSize() > 2) {
                             change = true;
                             sortingLeafs(current, false);
@@ -255,7 +249,6 @@ public class TreeB {
                         }
                     }
                 } else {
-                    //Si no es hoja
                     if (current.getPrevious() == null && current.getNext() == null
                             || current.getPrevious() != null && current.getNext() == null) {
                         if (current.getLeft().getSize() < 2 && current.getRight().getSize() > 2) {
@@ -375,7 +368,6 @@ public class TreeB {
     }
 
     private void mergeLeafs(NodeB current, boolean mode, Branch branch) {
-        //System.out.println("current: " + current.getClient().getDpi());
         Branch newBranch = new Branch();
         NodeB currentL = current.getLeft().getFirst();
         while (currentL != null) {
@@ -569,7 +561,6 @@ public class TreeB {
                     + "  ];\n";
             int temp = cont;
             while (Current != null) {
-                //System.out.println("current: " + Current.getClient().getDpi() + ", size: " + branch.getSize());
 
                 if (Current.getLeft() != null) {
                     if (Current.getLeft().getSize() != 0) {
@@ -729,6 +720,7 @@ public class TreeB {
         process.redirectErrorStream(true);
         try {
             process.start();
+            System.out.println("Archivo generado");
         } catch (IOException ex) {
             System.out.println(ex);
         }
@@ -755,6 +747,7 @@ public class TreeB {
                 try {
                     f.close();
                 } catch (IOException ex) {
+                    System.out.println(ex);
                 }
             }
         }
@@ -765,13 +758,13 @@ public class TreeB {
         String gText = "digraph {\n"
                 + "  node [ shape=none fontname=Helvetica ]\n"
                 + "  n [ label = <\n"
-                + "    <table bgcolor=\"black\">"
+                + "    <table bgcolor=\"black\">\n"
                 + "       <tr>\n"
                 + "         <td bgcolor=\"#ccccff\">Nivel</td>\n"
                 + "         <td bgcolor=\"#ccccff\">Nombre</td>\n"
                 + "         <td bgcolor=\"#ccccff\">DPI</td>\n"
                 + "         <td bgcolor=\"#ccccff\">Cantidad de imágenes</td>\n"
-                + "       </tr>";
+                + "       </tr>\n";
         while (current != null) {
             Node current2 = current.valueao.getLayers().first;
             while (current2 != null) {
@@ -783,14 +776,14 @@ public class TreeB {
                             + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getName() + "</td>\n"
                             + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getDpi() + "</td>\n"
                             + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getImages().images.size + "</td>\n"
-                            + "       </tr>";
+                            + "       </tr>\n";
                 } else {
                     gText += "         <tr>\n"
                             + "         <td bgcolor=\"#ffcccc\">" + current.valueao.getIndex() + "</td>\n"
                             + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getName() + "</td>\n"
                             + "         <td bgcolor=\"#ffcccc\">" + current2.valuec.getDpi() + "</td>\n"
                             + "         <td bgcolor=\"#ffcccc\">0</td>\n"
-                            + "       </tr>";
+                            + "       </tr>\n";
                 }
                 current2 = current2.next;
             }
@@ -798,7 +791,7 @@ public class TreeB {
         }
         gText += "</table>\n"
                 + "  > ]\n"
-                + "label = \"Lista de clientes por niveles\";}";
-        drawImage(gText, 2);
+                + "label = \"Lista de clientes por niveles\";\n}";
+        BinaryTree.drawImage(gText, 8);
     }
 }

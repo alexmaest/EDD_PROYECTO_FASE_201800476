@@ -24,24 +24,22 @@ public class Branch {
             //recorrer e insertar
             NodeB Current = this.first;
             while (Current != null) {
-                if (Current.client.getDpi() == valueToAdd.client.getDpi()) {//------------->ya existe en el arbol
+                if (Current.client.getDpi() == valueToAdd.client.getDpi()) {
                     System.out.println("El cliente " + valueToAdd.client.getDpi() + " ya existe");
                     break;
                 } else {
                     if (Current.client.getDpi() > valueToAdd.client.getDpi()) {
-                        if (Current == this.first) {//------------->insertar al inicio
+                        if (Current == this.first) {
                             Current.previous = valueToAdd;
                             valueToAdd.next = Current;
-                            //ramas del nodo
                             Current.left = valueToAdd.right;
                             valueToAdd.right = null;
 
                             this.first = valueToAdd;
                             this.size += 1;
                             break;
-                        } else {//------------->insertar en medio;
+                        } else {
                             valueToAdd.next = Current;
-                            //ramas del nodo
                             Current.left = valueToAdd.right;
                             valueToAdd.right = null;
 
@@ -51,7 +49,7 @@ public class Branch {
                             this.size += 1;
                             break;
                         }
-                    } else if (Current.next == null) {//------------->insertar al final
+                    } else if (Current.next == null) {
                         Current.next = valueToAdd;
                         valueToAdd.previous = Current;
                         this.size += 1;

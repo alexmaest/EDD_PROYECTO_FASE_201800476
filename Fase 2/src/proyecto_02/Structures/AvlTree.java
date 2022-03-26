@@ -99,7 +99,7 @@ public class AvlTree {
                     if (newValue.dato.getId() > subNode.right.dato.getId()) {
                         newFather = rotateRight(subNode);
                     } else {
-                        newFather = rotateRight(subNode);
+                        newFather = rotateDoubleRight(subNode);
                     }
                 }
             }
@@ -123,6 +123,142 @@ public class AvlTree {
             this.root = newValue;
         } else {
             this.root = Add(newValue, this.root);
+        }
+    }
+
+    public NodeAvl delete(int id, NodeAvl subNode) {
+        NodeAvl newFather = subNode;
+        if (id < subNode.dato.getId()) {
+            if (subNode.left == null) {
+                System.out.println("Valor no encontrado");
+                return null;
+            } else {
+                subNode.left = delete(id, subNode.left);
+                if ((obtainFE(subNode.left) - obtainFE(subNode.right)) == 2) {
+                    if (id < subNode.left.dato.getId()) {
+                        newFather = rotateLeft(subNode);
+                    } else {
+                        newFather = rotateDoubleLeft(subNode);
+                    }
+                }
+            }
+        } else if (id > subNode.dato.getId()) {
+            if (subNode.right == null) {
+                System.out.println("Valor no encontrado");
+                return null;
+            } else {
+                subNode.right = delete(id, subNode.right);
+                if ((obtainFE(subNode.right) - obtainFE(subNode.left)) == 2) {
+                    if (id > subNode.right.dato.getId()) {
+                        newFather = rotateRight(subNode);
+                    } else {
+                        newFather = rotateRight(subNode);
+                    }
+                }
+            }
+        } else {
+            if (subNode.left != null && subNode.right == null) {
+                NodeAvl temp = subNode.left;
+                subNode = temp;
+                newFather = temp;
+            } else if (subNode.left == null && subNode.right != null) {
+                NodeAvl temp = subNode.right;
+                subNode = temp;
+                newFather = temp;
+            } else if (subNode.left == null && subNode.right == null) {
+                subNode = null;
+                newFather = null;
+            } else {
+                if (subNode.left.fe > subNode.right.fe) {
+                    subNode.dato = replaceWithLastRight(this.root.right, this.root);
+                    newFather.dato = subNode.dato;
+                } else if (subNode.left.fe < subNode.right.fe) {
+                    subNode.dato = replaceWithLastLeft(this.root.left, this.root);
+                    newFather.dato = subNode.dato;
+                } else {
+                    if (subNode.left.dato.getId() < subNode.right.dato.getId()) {
+                        NodeAvl temp = subNode.right;
+                        newFather = subNode.left;
+                        subNode = subNode.left;
+                        subNode.right = temp;
+                        newFather.right = temp;
+                    } else {
+                        NodeAvl temp = subNode.left;
+                        newFather = subNode.right;
+                        subNode = subNode.right;
+                        subNode.left = temp;
+                        newFather.left = temp;
+                    }
+                }
+            }
+            System.out.println("Nodo eliminado");
+        }
+        //Actualizando la altura
+        if (subNode != null) {
+            if (subNode.left == null && subNode.right != null) {
+                subNode.fe = subNode.right.fe - 1;
+            } else if (subNode.right == null && subNode.left != null) {
+                subNode.fe = subNode.left.fe - 1;
+            } else {
+                subNode.fe = Math.max(obtainFE(subNode.left), obtainFE(subNode.right)) - 1;
+            }
+        }
+        return newFather;
+    }
+
+    private Photo replaceWithLastLeft(NodeAvl node, NodeAvl father) {
+        if (node.left == null && node.right == null) {
+            NodeAvl temp = node;
+            father.right = null;
+            return temp.dato;
+        } else if (node.left != null && node.right == null) {
+            if (node.left.left == null && node.left.right == null) {
+                NodeAvl temp = node;
+                node.dato = node.left.dato;
+                node.left = null;
+                return temp.dato;
+            } else {
+                return replaceWithLastLeft(node.left, node);
+            }
+        } else if (node.left == null && node.right != null) {
+            if (node.right.left == null && node.right.right == null) {
+                NodeAvl temp = node;
+                node.dato = node.right.dato;
+                node.right = null;
+                return temp.dato;
+            } else {
+                return replaceWithLastLeft(node.right, node);
+            }
+        } else {
+            return replaceWithLastLeft(node.right, node);
+        }
+    }
+
+    private Photo replaceWithLastRight(NodeAvl node, NodeAvl father) {
+        if (node.left == null && node.right == null) {
+            NodeAvl temp = node;
+            father.left = null;
+            return temp.dato;
+        } else if (node.left != null && node.right == null) {
+            if (node.left.left == null && node.left.right == null) {
+                NodeAvl temp = node;
+                node.dato = node.left.dato;
+                node.left = null;
+                return temp.dato;
+            } else {
+                return replaceWithLastRight(node.left, node);
+            }
+        } else if (node.left == null && node.right != null) {
+            if (node.right.left == null && node.right.right == null) {
+                NodeAvl temp = node;
+                node.dato = node.right.dato;
+                node.right = null;
+                return temp.dato;
+            } else {
+                return replaceWithLastRight(node.right, node);
+            }
+        } else {
+            return replaceWithLastRight(node.left, node);
         }
     }
 
@@ -246,11 +382,11 @@ public class AvlTree {
         }
     }
 
-    public void inOrder(NodeAvl node) {
+    public void inOrder() {
         this.root.inOrder();
     }
 
-    public void postOrder(NodeAvl node) {
+    public void postOrder() {
         this.root.postOrder();
     }
 

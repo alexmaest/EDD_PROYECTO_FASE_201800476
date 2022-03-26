@@ -23,7 +23,7 @@ public class NodeAvl {
         if (left != null) {
             left.inOrder();
         }
-        System.out.println(dato);
+        System.out.println(dato.getId());
         if (right != null) {
             right.inOrder();
         }

@@ -5,20 +5,11 @@
  */
 package proyecto_02;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import static proyecto_02.Main.clients;
+import proyecto_02.Structures.TreeB;
 
 /**
  *
@@ -37,6 +28,7 @@ public class AdminUI extends javax.swing.JFrame {
         ImageIcon imageIcon = new ImageIcon(newimg);
         imageLabel1.setIcon(imageIcon);
         imageLabel2.setIcon(imageIcon);
+        imageLabel3.setIcon(imageIcon);
     }
 
     /**
@@ -84,7 +76,7 @@ public class AdminUI extends javax.swing.JFrame {
         jPanel34 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         LeftPanel9 = new javax.swing.JPanel();
-        imageLabel7 = new javax.swing.JLabel();
+        imageLabel3 = new javax.swing.JLabel();
         jButton27 = new javax.swing.JButton();
         jPanel35 = new javax.swing.JPanel();
         treePanel7 = new javax.swing.JPanel();
@@ -532,9 +524,9 @@ public class AdminUI extends javax.swing.JFrame {
         LeftPanel9.setBackground(new java.awt.Color(0, 0, 0));
         LeftPanel9.setForeground(new java.awt.Color(255, 153, 0));
 
-        imageLabel7.setFont(new java.awt.Font("Dialog", 2, 24)); // NOI18N
-        imageLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        imageLabel7.setText(" Admin");
+        imageLabel3.setFont(new java.awt.Font("Dialog", 2, 24)); // NOI18N
+        imageLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        imageLabel3.setText(" Admin");
 
         jButton27.setBackground(new java.awt.Color(0, 51, 255));
         jButton27.setForeground(new java.awt.Color(255, 255, 255));
@@ -554,7 +546,7 @@ public class AdminUI extends javax.swing.JFrame {
                 .addGroup(LeftPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(LeftPanel9Layout.createSequentialGroup()
                         .addGap(0, 34, Short.MAX_VALUE)
-                        .addComponent(imageLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(imageLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -562,7 +554,7 @@ public class AdminUI extends javax.swing.JFrame {
             LeftPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(LeftPanel9Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(imageLabel7)
+                .addComponent(imageLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 453, Short.MAX_VALUE)
                 .addComponent(jButton27, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
@@ -765,6 +757,7 @@ public class AdminUI extends javax.swing.JFrame {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
         Main.readClientsJson();
+        JOptionPane.showMessageDialog(this, "Información: Archivo cargado");
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -789,16 +782,20 @@ public class AdminUI extends javax.swing.JFrame {
 
     private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
         // TODO add your handling code here:
+        this.dispose();
+        Login l = new Login();
+        l.setLocationRelativeTo(null);
+        l.setVisible(true);
     }//GEN-LAST:event_jButton27ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
         Main.clients.amplitudeOrder();
         Main.clients.printLevel();
-        Main.clients.clientsGraph();
+        TreeB.clientsGraph();
         ImageIcon iconLogo = new ImageIcon("clientsGraph.png");
         Image image = iconLogo.getImage();
-        Image newimg = image.getScaledInstance(350, 300, Image.SCALE_AREA_AVERAGING);
+        Image newimg = image.getScaledInstance(395, 300, Image.SCALE_AREA_AVERAGING);
         ImageIcon imageIcon = new ImageIcon(newimg);
         screenReport.setIcon(imageIcon);
     }//GEN-LAST:event_jButton16ActionPerformed
@@ -810,7 +807,7 @@ public class AdminUI extends javax.swing.JFrame {
         sf.setVisible(true);
     }//GEN-LAST:event_jButton17ActionPerformed
 
-    public static void showSearhGraph() {
+    public static void showSearchGraph() {
         ImageIcon iconLogo = new ImageIcon("searchGraph.png");
         Image image = iconLogo.getImage();
         Image newimg = image.getScaledInstance(350, 300, Image.SCALE_AREA_AVERAGING);
@@ -818,6 +815,7 @@ public class AdminUI extends javax.swing.JFrame {
         screenReport.setIcon(imageIcon);
     }
 
+    
     /*
     ImageIcon iconLogo = new ImageIcon("user.png");
         Image image = iconLogo.getImage();
@@ -871,7 +869,7 @@ public class AdminUI extends javax.swing.JFrame {
     private javax.swing.JPanel LeftPanel9;
     private javax.swing.JLabel imageLabel1;
     private javax.swing.JLabel imageLabel2;
-    private javax.swing.JLabel imageLabel7;
+    private javax.swing.JLabel imageLabel3;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
