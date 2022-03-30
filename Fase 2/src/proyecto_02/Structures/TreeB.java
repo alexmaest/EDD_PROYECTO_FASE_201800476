@@ -792,6 +792,7 @@ public class TreeB {
         gText += "</table>\n"
                 + "  > ]\n"
                 + "label = \"Lista de clientes por niveles\";\n}";
+        System.out.println(gText);
         BinaryTree.drawImage(gText, 8);
     }
 }
