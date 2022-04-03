@@ -42,6 +42,9 @@ public class BinaryTree {
                         father.left = layer;
                         break;
                     }
+                }else if(layer.value.getId() == aux.value.getId()){
+                    System.out.println("capa ya agregada");
+                    break;
                 } else {
                     aux = aux.right;
                     if (aux == null) {

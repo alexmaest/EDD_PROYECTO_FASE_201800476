@@ -27,18 +27,32 @@ public class DoubleList {
     public void add(Album valueToAdd) {
         NodeDouble myNode = new NodeDouble();
         myNode.setValue(valueToAdd);
+        boolean Found = false;
+        NodeDouble current = this.first;
+        while (current != null) {
+            if (current.getValue().getName().equals(valueToAdd.getName())) {
+                Found = true;
+                break;
+            }
+            current = current.getNext();
+        }
         if (this.first == null) {
             first = myNode;
             first.setNext(null);
             first.setPrevious(null);
             last = first;
+            this.size += 1;
         } else {
-            last.setNext(myNode);
-            myNode.setPrevious(last);
-            myNode.setNext(null);
-            last = myNode;
+            if (Found) {
+                System.out.println("Album duplicado");
+            } else {
+                last.setNext(myNode);
+                myNode.setPrevious(last);
+                myNode.setNext(null);
+                last = myNode;
+                this.size += 1;
+            }
         }
-        this.size += 1;
     }
 
     public void printContent() {

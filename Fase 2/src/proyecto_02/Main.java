@@ -108,8 +108,7 @@ public class Main {
         }
     }
     
-    public static BinaryTree readLayersJson() {
-        BinaryTree tempTree = new BinaryTree();
+    public static BinaryTree readLayersJson(BinaryTree tree) {
         try {
             JsonParser parser = new JsonParser();
             System.out.println("Cargando...");
@@ -125,16 +124,15 @@ public class Main {
                     String color = list.get(i).getAsJsonObject().get("pixeles").getAsJsonArray().get(j).getAsJsonObject().get("color").getAsString();
                     pixels.addPixel(new Pixel(row, column, color));
                 }
-                tempTree.add(new NodeBinary(new Layer(id, pixels)));
+                tree.add(new NodeBinary(new Layer(id, pixels)));
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        return tempTree;
+        return tree;
     }
     
-    public static AvlTree readImagesJson() {
-        AvlTree tempTree = new AvlTree();
+    public static AvlTree readImagesJson(AvlTree tree) {
         try {
             JsonParser parser = new JsonParser();
             Object obj = parser.parse(openFileChooser());
@@ -152,16 +150,15 @@ public class Main {
                         System.out.println("Capa no encontrada");
                     }
                 }
-                tempTree.insert(new Photo(id, temp));
+                tree.insert(new Photo(id, temp));
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        return tempTree;
+        return tree;
     }
     
-    public static DoubleList readAlbumJson() {
-        DoubleList albums = new DoubleList();
+    public static DoubleList readAlbumJson(DoubleList albums) {
         try {
             JsonParser parser = new JsonParser();
             Object obj = parser.parse(openFileChooser());

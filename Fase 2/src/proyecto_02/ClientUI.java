@@ -17,9 +17,13 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import proyecto_02.Structures.AvlTree;
+import proyecto_02.Structures.BinaryTree;
+import proyecto_02.Structures.DoubleList;
 import proyecto_02.Structures.List;
 import proyecto_02.Structures.SubStructure.Node;
 import proyecto_02.Structures.SubStructure.NodeBinary;
+import proyecto_02.Structures.TreeB;
 
 /**
  *
@@ -68,7 +72,7 @@ public class ClientUI extends javax.swing.JFrame {
             fillNumLayerCB();
             fillIdLayerAddCB();
         }
-        if (Login.currentUser.getImages()!= null) {
+        if (Login.currentUser.getImages() != null) {
             fillImagesCB();
         }
     }
@@ -1837,20 +1841,32 @@ public class ClientUI extends javax.swing.JFrame {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
-        Login.currentUser.setAlbums(Main.readAlbumJson());
+        if (Login.currentUser.getAlbums() == null) {
+            Login.currentUser.setAlbums(Main.readAlbumJson(new DoubleList()));
+        } else {
+            Login.currentUser.setAlbums(Main.readAlbumJson(Login.currentUser.getAlbums()));
+        }
         JOptionPane.showMessageDialog(this, "Información: Archivo cargado");
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
-        Login.currentUser.setImages(Main.readImagesJson());
+        if (Login.currentUser.getImages() == null) {
+            Login.currentUser.setImages(Main.readImagesJson(new AvlTree()));
+        } else {
+            Login.currentUser.setImages(Main.readImagesJson(Login.currentUser.getImages()));
+        }
         fillImagesCB();
         JOptionPane.showMessageDialog(this, "Información: Archivo cargado");
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        Login.currentUser.setLayers(Main.readLayersJson());
+        if (Login.currentUser.getLayers() == null) {
+            Login.currentUser.setLayers(Main.readLayersJson(new BinaryTree()));
+        } else {
+            Login.currentUser.setLayers(Main.readLayersJson(Login.currentUser.getLayers()));
+        }
         fillNumLayerCB();
         fillIdLayerAddCB();
         JOptionPane.showMessageDialog(this, "Información: Archivo cargado");
